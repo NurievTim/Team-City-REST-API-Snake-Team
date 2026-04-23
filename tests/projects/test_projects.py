@@ -83,3 +83,4 @@ class TestProjectsSmoke:
         assert_that(count, greater_than_or_equal_to(1))  # Должен быть хотя бы 1 авторизованный агент
 
 
+
