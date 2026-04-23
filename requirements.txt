@@ -12,3 +12,4 @@ uuid
 PyHamcrest==2.1.0
 allure-python-commons
 jsonschema
+python-dotenv
