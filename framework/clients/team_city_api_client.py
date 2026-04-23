@@ -209,30 +209,30 @@ class TeamCityApiClient(BaseHttpApiClient):
         return self.request('put', uri, headers=headers, data=data, **kwargs)
 
     @allure.step('POST /app/rest/users')
-    def add_user(self, headers: dict, data: dict, **kwargs) -> requests.Response | dict:
+    def add_user(self, headers: dict | None, data: dict, **kwargs) -> requests.Response | dict:
         """Method /app/rest/users"""
         uri = '/app/rest/users'
         return self.request('post', uri, headers=headers, data=data, **kwargs)
 
-    @allure.step('DELETE /app/rest/users/{userLocator}')
-    def delete_user(self, user_locator: str, headers: dict, **kwargs) -> requests.Response | dict:
+    @allure.step('DELETE /app/rest/users/{user_locator}')
+    def delete_user(self, user_locator: str, headers: dict | None, **kwargs) -> requests.Response | dict:
         """Method /app/rest/users/{userLocator}"""
         uri = f'/app/rest/users/{user_locator}'
         return self.request('delete', uri, headers=headers, check_status=None, **kwargs)
 
-    @allure.step('PUT /app/rest/users/{userLocator}/roles/{roleId}/{scope}')
+    @allure.step('PUT /app/rest/users/{user_locator}/roles/{role_id}/{scope}')
     def add_role_to_user(self, user_locator: str, role_id: str, scope: str, headers: dict, **kwargs) -> requests.Response | dict:
         """Method /app/rest/users/{userLocator}/roles/{roleId}/{scope}"""
         uri = f'/app/rest/users/{user_locator}/roles/{role_id}/{scope}'
         return self.request('put', uri, headers=headers, **kwargs)
 
-    @allure.step('POST /app/rest/users/{userLocator}/tokens/{name}')
+    @allure.step('POST /app/rest/users/{user_locator}/tokens/{name}')
     def add_user_token(self, user_locator: str, name: str, headers: dict, **kwargs) -> requests.Response | dict:
         """Method /app/rest/users/{userLocator}/tokens/{name}"""
         uri = f'/app/rest/users/{user_locator}/tokens/{name}'
         return self.request('post', uri, headers=headers, **kwargs)
 
-    @allure.step('DELETE /app/rest/users/{userLocator}/tokens/{name}')
+    @allure.step('DELETE /app/rest/users/{user_locator}/tokens/{name}')
     def delete_user_token(self, user_locator: str, name: str, headers: dict, **kwargs) -> requests.Response | dict:
         """Method /app/rest/users/{userLocator}/tokens/{name}"""
         uri = f'/app/rest/users/{user_locator}/tokens/{name}'
