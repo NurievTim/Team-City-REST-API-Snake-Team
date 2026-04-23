@@ -13,4 +13,9 @@ class TestProjectsSmoke:
         response = team_city_api_client.get_projects(headers=no_auth_headers, check_status=None)
         check.check_status_code(response=response, expected_status_code=requests.codes.unauthorized)
 
+    @allure.title('GET /projects, 200')
+    def test_get_projects_with_token(self, team_city_api_client, proj_admin_headers):
+        response = team_city_api_client.get_projects(headers=proj_admin_headers, check_status=None)
+        check.check_status_code(response=response, expected_status_code=requests.codes.ok)
+
 
