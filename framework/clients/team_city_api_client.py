@@ -55,8 +55,8 @@ class TeamCityApiClient(BaseHttpApiClient):
     @allure.step('GET /app/rest/builds/{buildLocator}')
     def get_build(self, build_locator: str, headers: dict, **kwargs) -> requests.Response | dict:
         """Method /app/rest/builds/{buildLocator}"""
-        uri = f'/app/rest/builds/{build_locator}'
-        return self.request('get', uri, headers=headers, **kwargs)
+        uri = '/app/rest/builds/{buildLocator}'
+        return self.request('get', uri, headers=headers, buildLocator=build_locator, **kwargs)
 
     @allure.step('GET /app/rest/builds')
     def get_builds(self, headers: dict, **kwargs) -> requests.Response | dict:
