@@ -1,7 +1,6 @@
 import allure
-import pytest
 import requests
-from hamcrest import assert_that, equal_to
+from hamcrest import assert_that, equal_to, contains_string
 from jsonschema import validate
 from pydantic import BaseModel
 
@@ -29,8 +28,19 @@ def check_status_code(response: requests.Response, expected_status_code: int) ->
         f'{response.content}',
     )
 
-def check_canceled_build_status(response: requests.Response, expected_status: str) -> None:
-    """Function to check expected_status in response"""
-    status_text = response.json().get('statusText')
+@allure.step('Проверить, что состояние билда равна {expected_state}')
+def check_build_state(response: requests.Response, expected_state: str) -> None:
+    """Function to check state in response"""
+    state = response.json().get('state')
 
-    assert_that(status_text, equal_to(expected_status), f'statusText was expected to be {expected_status} but was {status_text}')
+    assert_that(state, contains_string(expected_state),
+                f'State was expected to be {expected_state} but was {state}')
+
+
+@allure.step('Проверить, что статус билда равен {expected_status}')
+def check_build_status(response: requests.Response, expected_status: str) -> None:
+    """Function to check status in response"""
+    status = response.json().get('statusText')
+
+    assert_that(status, contains_string(expected_status),
+                f'State was expected to be {expected_status} but was {status}')
