@@ -124,10 +124,28 @@ class TeamCityApiClient(BaseHttpApiClient):
         uri = '/app/rest/buildTypes'
         return self.request('get', uri, headers=headers, **kwargs)
 
+    @allure.step('GET /app/rest/buildTypes/{build_type_locator}')
+    def get_build_type(self, build_type_locator: str, headers: dict, **kwargs) -> requests.Response | dict:
+        """Method /app/rest/buildTypes/{build_type_locator}"""
+        uri = f'/app/rest/buildTypes/{build_type_locator}'
+        return self.request('get', uri, headers=headers, **kwargs)
+
+    @allure.step('DELETE /app/rest/buildTypes/{build_type_locator}')
+    def delete_build_type(self, build_type_locator: str, headers: dict, **kwargs) -> requests.Response | dict:
+        """Method /app/rest/buildTypes/{build_type_locator} — удаление build configuration."""
+        uri = f'/app/rest/buildTypes/{build_type_locator}'
+        return self.request('delete', uri, headers=headers, check_status=None, **kwargs)
+
     @allure.step('GET /app/rest/buildTypes/{build_type_locator}/triggers')
     def get_build_type_triggers(self, build_type_locator: str, headers: dict, **kwargs) -> requests.Response | dict:
         """Method /app/rest/buildTypes/{build_type_locator}/triggers"""
         uri = f'/app/rest/buildTypes/{build_type_locator}/triggers'
+        return self.request('get', uri, headers=headers, **kwargs)
+
+    @allure.step('GET /app/rest/buildTypes/{build_type_locator}/paused')
+    def get_build_type_paused(self, build_type_locator: str, headers: dict, **kwargs) -> requests.Response | dict:
+        """Method /app/rest/buildTypes/{build_type_locator}/paused — обычно text/plain true/false."""
+        uri = f'/app/rest/buildTypes/{build_type_locator}/paused'
         return self.request('get', uri, headers=headers, **kwargs)
 
     @allure.step('PUT /app/rest/buildTypes/{build_type_locator}/paused')
@@ -148,11 +166,42 @@ class TeamCityApiClient(BaseHttpApiClient):
         uri = f'/app/rest/buildTypes/{build_type_locator}/parameters/{name}'
         return self.request('get', uri, headers=headers, **kwargs)
 
+    @allure.step('GET /app/rest/buildTypes/{build_type_locator}/parameters')
+    def get_build_type_parameters(self, build_type_locator: str, headers: dict, **kwargs) -> requests.Response | dict:
+        """Method /app/rest/buildTypes/{build_type_locator}/parameters — список параметров build configuration."""
+        uri = f'/app/rest/buildTypes/{build_type_locator}/parameters'
+        return self.request('get', uri, headers=headers, **kwargs)
+
+    @allure.step('POST /app/rest/buildTypes/{build_type_locator}/parameters')
+    def create_build_type_parameter(self, build_type_locator: str, headers: dict, data: dict, **kwargs) -> requests.Response | dict:
+        """Method /app/rest/buildTypes/{build_type_locator}/parameters — создание параметра (тело property)."""
+        uri = f'/app/rest/buildTypes/{build_type_locator}/parameters'
+        return self.request('post', uri, headers=headers, data=data, **kwargs)
+
+    @allure.step('DELETE /app/rest/buildTypes/{build_type_locator}/parameters/{name}')
+    def delete_build_type_parameter(self, build_type_locator: str, name: str, headers: dict, **kwargs) -> requests.Response | dict:
+        """Method /app/rest/buildTypes/{build_type_locator}/parameters/{name}"""
+        uri = f'/app/rest/buildTypes/{build_type_locator}/parameters/{name}'
+        return self.request('delete', uri, headers=headers, check_status=None, **kwargs)
+
     @allure.step('POST /app/rest/buildTypes/{build_type_locator}/move')
     def move_build_type(self, build_type_locator: str, headers: dict, **kwargs) -> requests.Response | dict:
-        """Method /app/rest/buildTypes/{build_type_locator}/move"""
+        """Method /app/rest/buildTypes/{build_type_locator}/move — query `targetProjectId` через kwargs params."""
         uri = f'/app/rest/buildTypes/{build_type_locator}/move'
         return self.request('post', uri, headers=headers, **kwargs)
+
+    @allure.step('POST /app/rest/buildTypes/{build_type_locator}/move?targetProjectId=…')
+    def move_build_type_to_project(
+        self,
+        build_type_locator: str,
+        target_project_id: str,
+        headers: dict,
+        **kwargs,
+    ) -> requests.Response | dict:
+        """POST move с query-параметром targetProjectId (см. REST: Move Build Configuration)."""
+        params = dict(kwargs.pop('params', {}))
+        params['targetProjectId'] = target_project_id
+        return self.move_build_type(build_type_locator, headers=headers, params=params, **kwargs)
 
     @allure.step('POST /app/rest/projects/{project_locator}/buildTypes')
     def copy_build_type_to_project(self, project_locator: str, headers: dict, data: dict, **kwargs) -> requests.Response | dict:

@@ -143,8 +143,8 @@ Assert:
   body.buildType.id == "TestProject_HelloWorld"
 
 Cleanup:
-  Если state == "queued": POST /buildQueue/{id} с cancelRequest
-  Если state == "running": POST /builds/{id} с cancelRequest
+  Если state == "queued": POST /app/rest/buildQueue/{id} с cancelRequest
+  Если state == "running": POST /app/rest/builds/{id} с cancelRequest
 ```
 
 **Ожидаемый результат:** Билд добавлен в очередь, `state == "queued"` или уже `running`
@@ -160,7 +160,7 @@ Cleanup:
 | **ID** | № 5 |
 | **Уровень** | Smoke |
 | **Приоритет** | P0 |
-| **Endpoint** | `GET /app/rest/builds/{buildId}` |
+| **Endpoint** | `GET /app/rest/builds/{buildLocator}` |
 
 **Предусловия:**
 - Создан и завершён хотя бы один билд (используем билд из № 4 или отдельный setup)
@@ -262,7 +262,7 @@ Assert:
 | **ID** | № 8 |
 | **Уровень** | Integration |
 | **Приоритет** | P0 |
-| **Endpoint** | `POST /app/rest/buildQueue/{queuedBuildId}` |
+| **Endpoint** | `POST /app/rest/buildQueue/{queuedBuildLocator}` |
 
 **Предусловия:**
 - Создан билд в очереди, сохранён его `id`
@@ -272,7 +272,7 @@ Assert:
 ```
 Arrange:
   # Создаём билд в очереди
-  build_id = POST /buildQueue {buildType.id: "TestProject_HelloWorld"} → body.id
+  build_id = POST /app/rest/buildQueue {buildType.id: "TestProject_HelloWorld"} → body.id
 
   payload = {
     "comment": "Cancelled by test #8",
@@ -309,7 +309,7 @@ Assert:
 | **ID** | № 9 |
 | **Уровень** | Integration |
 | **Приоритет** | P0 |
-| **Endpoint** | `POST /app/rest/builds/{buildId}` |
+| **Endpoint** | `POST /app/rest/builds/{buildLocator}` |
 
 **Предусловия:**
 - Билд запущен и находится в состоянии `running`
@@ -319,7 +319,7 @@ Assert:
 ```
 Arrange:
   # Запускаем билд
-  build_id = POST /buildQueue {buildType.id: "TestProject_LongRunning"} → body.id
+  build_id = POST /app/rest/buildQueue {buildType.id: "TestProject_LongRunning"} → body.id
   # Ждём state == "running" (polling)
   wait_for_state(build_id, "running", timeout=60s)
 
@@ -337,7 +337,7 @@ Assert:
   HTTP 200
   # Ждём финального состояния
   wait_for_state(build_id, "finished", timeout=30s)
-  GET /builds/id:{build_id} → body.canceledInfo != null
+  GET /app/rest/builds/id:{build_id} → body.canceledInfo != null
 ```
 
 **Ожидаемый результат:** Running-билд отменён корректно
@@ -358,13 +358,13 @@ Assert:
 **Предусловия:**
 - Проект и build config существуют
 - Параметр `myParam` задан в build config (или будет создан как новый)
-- Известен id агента (получить заранее через GET /agents)
+- Известен id агента (получить заранее через GET /app/rest/agents)
 - Ветка `main` существует в VCS
 
 **Шаги (AAA):**
 ```
 Arrange:
-  agent_id = GET /agents?locator=authorized:true → body.agent[0].id
+  agent_id = GET /app/rest/agents?locator=authorized:true → body.agent[0].id
 
   payload = {
     "buildType": { "id": "TestProject_HelloWorld" },
@@ -408,7 +408,7 @@ Cleanup:
 | **ID** | № 11 |
 | **Уровень** | Integration |
 | **Приоритет** | P1 |
-| **Endpoint** | `GET /app/rest/builds/{buildLocator}/artifacts/files/{path}` |
+| **Endpoint** | `GET /app/rest/builds/{buildLocator}/artifacts/files{path}` |
 
 **Предусловия:**
 - Завершённый успешный билд с артефактами
@@ -443,7 +443,7 @@ Assert:
 | **ID** | № 12 |
 | **Уровень** | Integration |
 | **Приоритет** | P1 |
-| **Endpoint** | `GET /app/rest/builds/{buildLocator}/statistics/` |
+| **Endpoint** | `GET /app/rest/builds/{buildLocator}/statistics` |
 
 **Предусловия:**
 - Завершённый билд с `BUILD_ID`
@@ -611,7 +611,7 @@ Assert:
 | **ID** | № 17 |
 | **Уровень** | Integration |
 | **Приоритет** | P1 |
-| **Endpoint** | `GET /app/rest/builds?locator=snapshotDependency:(from:(id:X))` |
+| **Endpoint** | `GET /app/rest/builds?locator=snapshotDependency:(to:(id:X))` |
 
 **Предусловия:**
 - Build chain: ConfigA → ConfigB (ConfigB зависит от ConfigA через snapshot dependency)
@@ -648,7 +648,7 @@ Assert:
 | **ID** | № 18 |
 | **Уровень** | Integration |
 | **Приоритет** | P1 |
-| **Endpoint** | `GET /app/rest/builds/id:{build_id}/resulting-properties` |
+| **Endpoint** | `GET /app/rest/builds/{buildLocator}/resulting-properties` |
 
 **Предусловия:**
 - Завершённый билд с `BUILD_ID`
@@ -691,7 +691,7 @@ Assert:
 ```
 Arrange:
   # Получить последний коммит из VCS root instance
-  vcs_instance_id = GET /vcs-root-instances?locator=vcsRoot:(id:TestRepo) → body.vcsRootInstance[0].id
+  vcs_instance_id = GET /app/rest/vcs-root-instances?locator=vcsRoot:(id:TestRepo) → body.vcsRootInstance[0].id
   commit_sha = <известный SHA из git-истории>
 
   payload = {
@@ -790,7 +790,7 @@ Cleanup:
 ```
 Arrange:
   # Создаём проект
-  POST /projects {id: "AutoTest_TC021", name: "AutoTest TC021", parentProject: {locator: "id:_Root"}}
+  POST /app/rest/projects {id: "AutoTest_TC021", name: "AutoTest TC021", parentProject: {locator: "id:_Root"}}
 
 Act:
   DELETE {TC_URL}/app/rest/projects/id:AutoTest_TC021
@@ -896,7 +896,7 @@ Assert:
   body.project.id == "TestProject"
 
 Cleanup:
-  DELETE /buildTypes/id:TestProject_HelloWorldCopyTC023
+  DELETE /app/rest/buildTypes/id:TestProject_HelloWorldCopyTC023
 ```
 
 **Ожидаемый результат:** Копия создана в том же проекте
@@ -921,7 +921,7 @@ Cleanup:
 ```
 Arrange:
   # Убеждаемся что конфиг не на паузе
-  GET /buildTypes/id:TestProject_HelloWorld/paused → "false"
+  GET /app/rest/buildTypes/id:TestProject_HelloWorld/paused → "false"
 
 Act:
   PUT {TC_URL}/app/rest/buildTypes/id:TestProject_HelloWorld/paused
@@ -933,10 +933,10 @@ Assert:
   HTTP 200
 
   # Проверяем статус
-  GET /buildTypes/id:TestProject_HelloWorld/paused → body == "true"
+  GET /app/rest/buildTypes/id:TestProject_HelloWorld/paused → body == "true"
 
 Cleanup:
-  PUT /buildTypes/id:TestProject_HelloWorld/paused → Body: "false"
+  PUT /app/rest/buildTypes/id:TestProject_HelloWorld/paused → Body: "false"
 ```
 
 **Ожидаемый результат:** Build config приостановлена
@@ -962,7 +962,7 @@ Cleanup:
 ```
 Arrange:
   # Создаём параметр если не существует
-  POST /buildTypes/id:TestProject_HelloWorld/parameters
+  POST /app/rest/buildTypes/id:TestProject_HelloWorld/parameters
   Body: { "name": "myTestParam", "value": "old_value" }
 
 Act:
@@ -974,11 +974,11 @@ Act:
 Assert:
   HTTP 200
 
-  GET /buildTypes/id:TestProject_HelloWorld/parameters/myTestParam
+  GET /app/rest/buildTypes/id:TestProject_HelloWorld/parameters/myTestParam
   body.value == "new_value_025"
 
 Cleanup:
-  DELETE /buildTypes/id:TestProject_HelloWorld/parameters/myTestParam
+  DELETE /app/rest/buildTypes/id:TestProject_HelloWorld/parameters/myTestParam
 ```
 
 **Ожидаемый результат:** Значение параметра обновлено
@@ -1028,7 +1028,7 @@ Assert:
   body.vcsName == "jetbrains.git"
 
 Cleanup:
-  DELETE /vcs-roots/id:TestProject_TC026Root
+  DELETE /app/rest/vcs-roots/id:TestProject_TC026Root
 ```
 
 **Ожидаемый результат:** VCS Root создан
@@ -1052,7 +1052,7 @@ Cleanup:
 **Шаги (AAA):**
 ```
 Arrange:
-  POST /projects {id:"AutoTest_TC027", name:"AutoTest TC027", parentProject:{locator:"id:_Root"}}
+  POST /app/rest/projects {id:"AutoTest_TC027", name:"AutoTest TC027", parentProject:{locator:"id:_Root"}}
 
 Act:
   PUT {TC_URL}/app/rest/projects/id:AutoTest_TC027/archived
@@ -1062,11 +1062,11 @@ Act:
 
 Assert:
   HTTP 200
-  GET /projects/id:AutoTest_TC027 → body.archived == true
+  GET /app/rest/projects/id:AutoTest_TC027 → body.archived == true
 
 Cleanup:
-  PUT /projects/id:AutoTest_TC027/archived → "false"
-  DELETE /projects/id:AutoTest_TC027
+  PUT /app/rest/projects/id:AutoTest_TC027/archived → "false"
+  DELETE /app/rest/projects/id:AutoTest_TC027
 ```
 
 **Ожидаемый результат:** Проект заархивирован
@@ -1092,11 +1092,11 @@ Cleanup:
 ```
 Arrange:
   # Создаём исходный проект и конфиг
-  POST /projects {id:"AutoTest_TC028Src", name:"TC028 Src"}
-  POST /buildTypes {id:"AutoTest_TC028Src_Config", name:"Config028", project:{id:"AutoTest_TC028Src"}}
+  POST /app/rest/projects {id:"AutoTest_TC028Src", name:"TC028 Src"}
+  POST /app/rest/buildTypes {id:"AutoTest_TC028Src_Config", name:"Config028", project:{id:"AutoTest_TC028Src"}}
 
   # Создаём целевой проект
-  POST /projects {id:"AutoTest_TC028Target", name:"TC028 Target"}
+  POST /app/rest/projects {id:"AutoTest_TC028Target", name:"TC028 Target"}
 
 Act:
   POST {TC_URL}/app/rest/buildTypes/id:AutoTest_TC028Src_Config/move?targetProjectId=AutoTest_TC028Target
@@ -1105,12 +1105,12 @@ Act:
 Assert:
   HTTP 200
   # Проверяем что конфиг теперь принадлежит целевому проекту
-  GET /buildTypes/id:AutoTest_TC028Src_Config → body.project.id == "AutoTest_TC028Target"
+  GET /app/rest/buildTypes/id:AutoTest_TC028Src_Config → body.project.id == "AutoTest_TC028Target"
 
 Cleanup:
-  DELETE /buildTypes/id:AutoTest_TC028Src_Config
-  DELETE /projects/id:AutoTest_TC028Target
-  DELETE /projects/id:AutoTest_TC028Src
+  DELETE /app/rest/buildTypes/id:AutoTest_TC028Src_Config
+  DELETE /app/rest/projects/id:AutoTest_TC028Target
+  DELETE /app/rest/projects/id:AutoTest_TC028Src
 ```
 
 **Ожидаемый результат:** Build config перемещена в целевой проект
@@ -1136,8 +1136,8 @@ Cleanup:
 ```
 Arrange:
   # Создаём подпроект и конфиг в нём
-  POST /projects {id:"TestProject_Sub029", name:"Sub029", parentProject:{locator:"id:TestProject"}}
-  POST /buildTypes {id:"TestProject_Sub029_Config", name:"SubConfig", project:{id:"TestProject_Sub029"}}
+  POST /app/rest/projects {id:"TestProject_Sub029", name:"Sub029", parentProject:{locator:"id:TestProject"}}
+  POST /app/rest/buildTypes {id:"TestProject_Sub029_Config", name:"SubConfig", project:{id:"TestProject_Sub029"}}
 
 Act:
   GET {TC_URL}/app/rest/buildTypes?locator=affectedProject:(id:TestProject)
@@ -1149,8 +1149,8 @@ Assert:
   В списке присутствует "TestProject_HelloWorld"
 
 Cleanup:
-  DELETE /buildTypes/id:TestProject_Sub029_Config
-  DELETE /projects/id:TestProject_Sub029
+  DELETE /app/rest/buildTypes/id:TestProject_Sub029_Config
+  DELETE /app/rest/projects/id:TestProject_Sub029
 ```
 
 **Ожидаемый результат:** Рекурсивный поиск возвращает конфиги из подпроектов
@@ -1210,7 +1210,7 @@ Assert:
 **Шаги (AAA):**
 ```
 Arrange:
-  agent_id = GET /agents?locator=authorized:true → body.agent[0].id
+  agent_id = GET /app/rest/agents?locator=authorized:true → body.agent[0].id
 
   payload = {
     "status": false,
@@ -1224,10 +1224,10 @@ Act:
 
 Assert:
   HTTP 200
-  GET /agents/id:{agent_id} → body.enabled == false
+  GET /app/rest/agents/id:{agent_id} → body.enabled == false
 
 Cleanup:
-  PUT /agents/id:{agent_id}/enabledInfo → { "status": true }
+  PUT /app/rest/agents/id:{agent_id}/enabledInfo → { "status": true }
 ```
 
 **Ожидаемый результат:** Агент отключён
@@ -1264,7 +1264,7 @@ Assert:
   body.id != null
 
 Cleanup:
-  DELETE /agentPools/id:{pool_id}
+  DELETE /app/rest/agentPools/id:{pool_id}
 ```
 
 **Ожидаемый результат:** Пул создан с корректным именем
@@ -1307,7 +1307,7 @@ Assert:
   body.id != null
 
 Cleanup:
-  DELETE /users/id:{user_id}
+  DELETE /app/rest/users/id:{user_id}
 ```
 
 **Ожидаемый результат:** Пользователь создан
@@ -1333,7 +1333,7 @@ Cleanup:
 ```
 Arrange:
   # Создаём тестового пользователя
-  user = POST /users {username:"tc_test_034", password:"Passw0rd034!", email:"tc034@test.local"}
+  user = POST /app/rest/users {username:"tc_test_034", password:"Passw0rd034!", email:"tc034@test.local"}
   user_id = user.id
 
 Act:
@@ -1342,10 +1342,10 @@ Act:
 
 Assert:
   HTTP 200
-  GET /users/id:{user_id}/roles → список содержит роль {roleId:"PROJECT_VIEWER", scope:"p:TestProject"}
+  GET /app/rest/users/id:{user_id}/roles → список содержит роль {roleId:"PROJECT_VIEWER", scope:"p:TestProject"}
 
 Cleanup:
-  DELETE /users/id:{user_id}
+  DELETE /app/rest/users/id:{user_id}
 ```
 
 **Ожидаемый результат:** Роль добавлена с корректным scope
@@ -1369,7 +1369,7 @@ Cleanup:
 **Шаги (AAA):**
 ```
 Arrange:
-  user = POST /users {username:"tc_test_035", password:"Passw0rd035!", email:"tc035@test.local"}
+  user = POST /app/rest/users {username:"tc_test_035", password:"Passw0rd035!", email:"tc035@test.local"}
   user_id = user.id
 
 Act:
@@ -1380,7 +1380,7 @@ Assert:
   HTTP 204
 
   # Проверяем что пользователь удалён
-  GET /users/id:{user_id} → HTTP 404
+  GET /app/rest/users/id:{user_id} → HTTP 404
 ```
 
 **Ожидаемый результат:** Пользователь удалён, повторный GET возвращает 404
@@ -1405,7 +1405,7 @@ Assert:
 **Шаги (AAA):**
 ```
 Arrange:
-  dev_user_id = GET /users/username:developer → body.id
+  dev_user_id = GET /app/rest/users/username:developer → body.id
 
 Act:
   POST {TC_URL}/app/rest/users/id:{dev_user_id}/tokens/tc_036_token
@@ -1417,7 +1417,7 @@ Assert:
   body.value != null   # сам токен виден только при создании!
 
 Cleanup:
-  DELETE /users/id:{dev_user_id}/tokens/tc_036_token
+  DELETE /app/rest/users/id:{dev_user_id}/tokens/tc_036_token
 ```
 
 **Ожидаемый результат:** Токен создан, значение возвращено в ответе
@@ -1443,7 +1443,7 @@ Cleanup:
 ```
 Arrange:
   # Получаем id дефолтного пула
-  pool_id = GET /agentPools?locator=name:Default → body.agentPool[0].id
+  pool_id = GET /app/rest/agentPools?locator=name:Default → body.agentPool[0].id
 
 Act:
   GET {TC_URL}/app/rest/agentPools/id:{pool_id}/agents
@@ -1477,7 +1477,7 @@ Assert:
 ```
 Arrange:
   # Получаем id неавторизованного агента
-  agent_id = GET /agents?locator=authorized:false → body.agent[0].id
+  agent_id = GET /app/rest/agents?locator=authorized:false → body.agent[0].id
 
   payload = {
     "status": true,
@@ -1491,10 +1491,10 @@ Act:
 
 Assert:
   HTTP 200
-  GET /agents/id:{agent_id} → body.authorized == true
+  GET /app/rest/agents/id:{agent_id} → body.authorized == true
 
 Cleanup:
-  PUT /agents/id:{agent_id}/authorizedInfo → { "status": false }
+  PUT /app/rest/agents/id:{agent_id}/authorizedInfo → { "status": false }
 ```
 
 **Ожидаемый результат:** Агент авторизован
@@ -1579,8 +1579,8 @@ Assert:
 **Шаги (AAA):**
 ```
 Arrange:
-  dev_id = GET /users/username:developer → body.id
-  POST /users/id:{dev_id}/tokens/tc_039c_token  # создаём токен
+  dev_id = GET /app/rest/users/username:developer → body.id
+  POST /app/rest/users/id:{dev_id}/tokens/tc_039c_token  # создаём токен
 
 Act:
   DELETE {TC_URL}/app/rest/users/id:{dev_id}/tokens/tc_039c_token
@@ -1588,7 +1588,7 @@ Act:
 
 Assert:
   HTTP 204
-  GET /users/id:{dev_id}/tokens → в списке нет "tc_039c_token"
+  GET /app/rest/users/id:{dev_id}/tokens → в списке нет "tc_039c_token"
 ```
 
 **Ожидаемый результат:** Токен удалён
@@ -1621,10 +1621,10 @@ Arrange:
   prefix = "E2E_TC040"
 
 Step 1: Создать проект
-  POST /projects {id:"{prefix}", name:"E2E TC040", parentProject:{locator:"id:_Root"}}
+  POST /app/rest/projects {id:"{prefix}", name:"E2E TC040", parentProject:{locator:"id:_Root"}}
 
 Step 2: Создать VCS Root
-  POST /vcs-roots {
+  POST /app/rest/vcs-roots {
     id:"{prefix}_Root", name:"E2E Root",
     vcsName:"jetbrains.git",
     project:{id:"{prefix}"},
@@ -1634,7 +1634,7 @@ Step 2: Создать VCS Root
   }
 
 Step 3: Создать Build Config с артефактом
-  POST /buildTypes {
+  POST /app/rest/buildTypes {
     id:"{prefix}_Build", name:"E2E Build",
     project:{id:"{prefix}"},
     steps:[{type:"simpleRunner",
@@ -1643,27 +1643,27 @@ Step 3: Создать Build Config с артефактом
   }
 
 Step 4: Привязать VCS Root к конфигу
-  POST /buildTypes/{prefix}_Build/vcs-root-entries
+  POST /app/rest/buildTypes/{prefix}_Build/vcs-root-entries
   { "id":"{prefix}_Root", "vcs-root":{"id":"{prefix}_Root"} }
 
 Step 5: Запустить билд
-  build_id = POST /buildQueue {buildType:{id:"{prefix}_Build"}} → body.id
+  build_id = POST /app/rest/buildQueue {buildType:{id:"{prefix}_Build"}} → body.id
   wait_for_state(build_id, "finished", timeout=120s)
 
 Step 6: Проверить успех
-  GET /builds/id:{build_id} → body.status == "SUCCESS"
+  GET /app/rest/builds/id:{build_id} → body.status == "SUCCESS"
 
 Step 7: Скачать артефакт
-  GET /builds/id:{build_id}/artifacts/files/build_output.txt → HTTP 200
+  GET /app/rest/builds/id:{build_id}/artifacts/files/build_output.txt → HTTP 200
 
 Assert:
   Все шаги выполнены без ошибок
   Артефакт доступен для скачивания
 
 Cleanup:
-  DELETE /buildTypes/id:{prefix}_Build
-  DELETE /vcs-roots/id:{prefix}_Root
-  DELETE /projects/id:{prefix}
+  DELETE /app/rest/buildTypes/id:{prefix}_Build
+  DELETE /app/rest/vcs-roots/id:{prefix}_Root
+  DELETE /app/rest/projects/id:{prefix}
 ```
 
 **Ожидаемый результат:** Полный lifecycle выполнен успешно
@@ -1698,12 +1698,12 @@ Arrange:
   }
 
 Act:
-  build_b_id = POST /buildQueue → payload → body.id
+  build_b_id = POST /app/rest/buildQueue → payload → body.id
   wait_for_state(build_b_id, "finished", timeout=120s)
 
 Assert:
   HTTP 200 на запуске
-  GET /builds/id:{build_b_id} → body.status == "SUCCESS"
+  GET /app/rest/builds/id:{build_b_id} → body.status == "SUCCESS"
   Билд ConfigA НЕ был перезапущен (проверяем что нет нового билда с startDate > timestamp)
 ```
 
@@ -1730,23 +1730,23 @@ Assert:
 ```
 Arrange:
   # Отключаем агент через API
-  agent_id = GET /agents?locator=name:agent2 → body.agent[0].id
-  PUT /agents/id:{agent_id}/enabledInfo → { "status": false }
+  agent_id = GET /app/rest/agents?locator=name:agent2 → body.agent[0].id
+  PUT /app/rest/agents/id:{agent_id}/enabledInfo → { "status": false }
 
 Step 1: Запускаем билд
-  build_id = POST /buildQueue {buildType:{id:"TestProject_HelloWorld"}} → body.id
+  build_id = POST /app/rest/buildQueue {buildType:{id:"TestProject_HelloWorld"}} → body.id
   # Ждём что билд в queued-состоянии (агент недоступен)
   sleep(5s)
-  GET /builds/id:{build_id} → body.state == "queued"
+  GET /app/rest/builds/id:{build_id} → body.state == "queued"
 
 Step 2: Включаем агент обратно
-  PUT /agents/id:{agent_id}/enabledInfo → { "status": true }
+  PUT /app/rest/agents/id:{agent_id}/enabledInfo → { "status": true }
 
 Step 3: Ждём завершения
   wait_for_state(build_id, "finished", timeout=120s)
 
 Assert:
-  GET /builds/id:{build_id} → body.status == "SUCCESS"
+  GET /app/rest/builds/id:{build_id} → body.status == "SUCCESS"
 ```
 
 **Ожидаемый результат:** Билд дождался агента и выполнился
@@ -1779,7 +1779,7 @@ Assert:
   HTTP 200 или 202
 
   # Проверяем статус синхронизации
-  GET /projects/id:{project_id}/versionedSettings/status → body не пустой
+  GET /app/rest/projects/id:{project_id}/versionedSettings/status → body не пустой
 ```
 
 **Ожидаемый результат:** Проверка изменений инициирована
@@ -1810,7 +1810,7 @@ Arrange:
   }
 
 Step 1: Создаём investigation
-  POST /investigations → payload → investigation_id = body.id
+  POST /app/rest/investigations → payload → investigation_id = body.id
 
 Assert_1:
   HTTP 200
@@ -1818,11 +1818,11 @@ Assert_1:
   body.state == "TAKEN"
 
 Step 2: Удаляем investigation
-  DELETE /investigations/id:{investigation_id}
+  DELETE /app/rest/investigations/id:{investigation_id}
 
 Assert_2:
   HTTP 204
-  GET /investigations/{investigation_id} → HTTP 404
+  GET /app/rest/investigations/{investigation_id} → HTTP 404
 ```
 
 **Ожидаемый результат:** Investigation создан и удалён
@@ -1856,11 +1856,11 @@ Arrange:
   }
 
 Act:
-  build_id = POST /buildQueue → payload → body.id
+  build_id = POST /app/rest/buildQueue → payload → body.id
   wait_for_state(build_id, "finished", timeout=120s)
 
 Assert:
-  GET /builds/id:{build_id}/resulting-properties
+  GET /app/rest/builds/id:{build_id}/resulting-properties
   В списке есть property с name=="env.CUSTOM_VAR" и value=="override_value_047"
 ```
 
@@ -1875,18 +1875,18 @@ Assert:
 ```
 Arrange:
   # Запустить ConfigA, дождаться артефакта
-  build_a_id = POST /buildQueue {buildType:{id:"ConfigA"}} → body.id
+  build_a_id = POST /app/rest/buildQueue {buildType:{id:"ConfigA"}} → body.id
   wait_for_state(build_a_id, "finished", timeout=120s)
 
 Act:
   # Запустить ConfigB (использует артефакт ConfigA)
-  build_b_id = POST /buildQueue {buildType:{id:"ConfigB"}} → body.id
+  build_b_id = POST /app/rest/buildQueue {buildType:{id:"ConfigB"}} → body.id
   wait_for_state(build_b_id, "finished", timeout=120s)
 
 Assert:
-  GET /builds/id:{build_b_id} → body.status == "SUCCESS"
+  GET /app/rest/builds/id:{build_b_id} → body.status == "SUCCESS"
   # Проверяем что артефактная зависимость разрешена
-  GET /builds?locator=artifactDependency:(to:(id:{build_b_id})) → содержит build_a_id
+  GET /app/rest/builds?locator=artifactDependency:(to:(id:{build_b_id})) → содержит build_a_id
 ```
 
 ---
@@ -1898,7 +1898,7 @@ Assert:
 | **ID** | № 50 |
 | **Уровень** | E2E |
 | **Приоритет** | P1 |
-| **Endpoint** | `GET /app/rest/builds/{buildLocator}/artifacts/archived/{path}?locator=pattern:{wildcard}` |
+| **Endpoint** | `GET /app/rest/builds/{buildLocator}/artifacts/archived{path}?locator=pattern:{wildcard}` |
 
 **Предусловия:**
 - Завершённый билд с несколькими .txt артефактами
@@ -1929,7 +1929,7 @@ Assert:
 | **ID** | № 51 |
 | **Уровень** | E2E |
 | **Приоритет** | P1 |
-| **Endpoint** | `GET /app/rest/builds/{buildLocator}/artifacts/metadata/{path}` |
+| **Endpoint** | `GET /app/rest/builds/{buildLocator}/artifacts/metadata{path}` |
 
 **Шаги (AAA):**
 ```
@@ -1956,7 +1956,7 @@ Assert:
 | **ID** | № 52 |
 | **Уровень** | E2E |
 | **Приоритет** | P1 |
-| **Endpoint** | `PUT /app/rest/builds/{buildLocator}/pin` → `DELETE` |
+| **Endpoint** | `GET/PUT /app/rest/builds/{buildLocator}/pinInfo` |
 
 **Шаги (AAA):**
 ```
@@ -1964,18 +1964,20 @@ Arrange:
   build_id = <id завершённого билда>
 
 Step 1: Пинуем
-  PUT {TC_URL}/app/rest/builds/id:{build_id}/pin
-  Header: Content-Type: text/plain
-  Body: "Pinned by TC-051"
+  PUT {TC_URL}/app/rest/builds/id:{build_id}/pinInfo
+  Header: Content-Type: application/json
+  Body: { "status": true }
 
 Assert_1:
-  GET /builds/id:{build_id}/pin → "true"
+  GET /app/rest/builds/id:{build_id}/pinInfo → body.status == true
 
 Step 2: Анпинуем
-  DELETE {TC_URL}/app/rest/builds/id:{build_id}/pin
+  PUT {TC_URL}/app/rest/builds/id:{build_id}/pinInfo
+  Header: Content-Type: application/json
+  Body: { "status": false }
 
 Assert_2:
-  GET /builds/id:{build_id}/pin → "false"
+  GET /app/rest/builds/id:{build_id}/pinInfo → body.status == false
 ```
 
 ---
@@ -2018,7 +2020,7 @@ Assert:
 **Шаги (AAA):**
 ```
 Act:
-  GET {TC_URL}/app/rest/builds/$help
+  GET {TC_URL}/app/rest/$help
   Header: Authorization: Bearer {ADMIN_TOKEN}
 
 Assert:
@@ -2045,13 +2047,13 @@ Assert:
 
 ---
 
-### № 57 — 5 конкурентных POST /buildQueue
+### № 57 — 5 конкурентных POST /app/rest/buildQueue
 
 **Шаги (AAA):**
 ```
 Act:
   Одновременно (async) отправляем 5 запросов:
-  POST /buildQueue {buildType:{id:"TestProject_HelloWorld"}}
+  POST /app/rest/buildQueue {buildType:{id:"TestProject_HelloWorld"}}
 
 Assert:
   Все 5 ответов: HTTP 200
@@ -2116,7 +2118,7 @@ Act:
 Assert:
   HTTP 200
   body.id == "TestProject"
-  Результат совпадает с GET /projects/id:TestProject
+  Результат совпадает с GET /app/rest/projects/id:TestProject
 ```
 
 ---
@@ -2127,20 +2129,20 @@ Assert:
 ```
 Arrange:
   # Создаём параметр
-  POST /buildTypes/id:TestProject_HelloWorld/parameters
+  POST /app/rest/buildTypes/id:TestProject_HelloWorld/parameters
   { "name": "idempotentParam", "value": "v1" }
 
 Act:
   # Отправляем PUT дважды с одним значением
-  PUT /buildTypes/id:TestProject_HelloWorld/parameters/idempotentParam → "v2"
-  PUT /buildTypes/id:TestProject_HelloWorld/parameters/idempotentParam → "v2"
+  PUT /app/rest/buildTypes/id:TestProject_HelloWorld/parameters/idempotentParam → "v2"
+  PUT /app/rest/buildTypes/id:TestProject_HelloWorld/parameters/idempotentParam → "v2"
 
 Assert:
   Оба PUT: HTTP 200
-  GET /buildTypes/id:TestProject_HelloWorld/parameters/idempotentParam → value == "v2"
+  GET /app/rest/buildTypes/id:TestProject_HelloWorld/parameters/idempotentParam → value == "v2"
 
 Cleanup:
-  DELETE /buildTypes/id:TestProject_HelloWorld/parameters/idempotentParam
+  DELETE /app/rest/buildTypes/id:TestProject_HelloWorld/parameters/idempotentParam
 ```
 
 ---
@@ -2166,7 +2168,7 @@ Assert:
   HTTP 200
 
 Cleanup:
-  DELETE /vcs-roots/id:PA_TC060_Root (с ADMIN токеном)
+  DELETE /app/rest/vcs-roots/id:PA_TC060_Root (с ADMIN токеном)
 ```
 
 ---
@@ -2176,7 +2178,7 @@ Cleanup:
 **Шаги (AAA):**
 ```
 Arrange:
-  agent_id = GET /agents?locator=authorized:true → body.agent[0].id
+  agent_id = GET /app/rest/agents?locator=authorized:true → body.agent[0].id
 
 Act:
   DELETE {TC_URL}/app/rest/agents/id:{agent_id}
@@ -2184,7 +2186,7 @@ Act:
 
 Assert:
   HTTP 403
-  Агент НЕ удалён: GET /agents/id:{agent_id} → HTTP 200
+  Агент НЕ удалён: GET /app/rest/agents/id:{agent_id} → HTTP 200
 ```
 
 ---
@@ -2223,12 +2225,12 @@ Cleanup:
 
 ---
 
-### № 66 — Guest доступ ON: GET /projects без токена → 200
+### № 66 — Guest доступ ON: GET /app/rest/projects без токена → 200
 
 **Шаги (AAA):**
 ```
 Arrange:
-  PUT /server/authSettings → включить allowGuest:true (с ADMIN токеном)
+  PUT /app/rest/server/authSettings → включить allowGuest:true (с ADMIN токеном)
 
 Act:
   GET {TC_URL}/guestAuth/app/rest/projects
@@ -2238,18 +2240,18 @@ Assert:
   HTTP 200
 
 Cleanup:
-  PUT /server/authSettings → allowGuest:false
+  PUT /app/rest/server/authSettings → allowGuest:false
 ```
 
 ---
 
-### № 67 — Guest доступ OFF: GET /projects без токена → 401
+### № 67 — Guest доступ OFF: GET /app/rest/projects без токена → 401
 
 **Шаги (AAA):**
 ```
 Arrange:
   Убеждаемся что guest доступ выключен
-  PUT /server/authSettings → allowGuest:false
+  PUT /app/rest/server/authSettings → allowGuest:false
 
 Act:
   GET {TC_URL}/app/rest/projects
@@ -2267,23 +2269,23 @@ Assert:
 ```
 Arrange:
   # Создаём тестового пользователя с ролью VIEWER
-  user_id = POST /users {username:"tc_065_user", password:"P@ssw0rd065"} → body.id
-  PUT /users/id:{user_id}/roles/PROJECT_VIEWER/p:TestProject
-  user_token = POST /users/id:{user_id}/tokens/tc065 → body.value
+  user_id = POST /app/rest/users {username:"tc_065_user", password:"P@ssw0rd065"} → body.id
+  PUT /app/rest/users/id:{user_id}/roles/PROJECT_VIEWER/p:TestProject
+  user_token = POST /app/rest/users/id:{user_id}/tokens/tc065 → body.value
 
   # Проверяем что доступ есть
-  GET /projects Header:Bearer {user_token} → HTTP 200
+  GET /app/rest/projects Header:Bearer {user_token} → HTTP 200
 
 Act:
   # Отзываем роль
-  DELETE /users/id:{user_id}/roles/PROJECT_VIEWER/p:TestProject
+  DELETE /app/rest/users/id:{user_id}/roles/PROJECT_VIEWER/p:TestProject
 
 Assert:
   # Доступ закрыт
-  GET /projects/id:TestProject Header:Bearer {user_token} → HTTP 403
+  GET /app/rest/projects/id:TestProject Header:Bearer {user_token} → HTTP 403
 
 Cleanup:
-  DELETE /users/id:{user_id}
+  DELETE /app/rest/users/id:{user_id}
 ```
 
 ---
@@ -2343,11 +2345,11 @@ Arrange:
   }
 
 Act:
-  build_id = POST /buildQueue → payload → body.id
+  build_id = POST /app/rest/buildQueue → payload → body.id
   wait_for_state(build_id, "finished", timeout=120s)
 
 Assert:
-  GET /builds/id:{build_id}/resulting-properties
+  GET /app/rest/builds/id:{build_id}/resulting-properties
   → содержит "teamcity.build.branch" == "main"
 ```
 
@@ -2391,10 +2393,10 @@ Act:
 
 Assert:
   HTTP 200
-  GET /builds/id:{build_id}/tags → содержит "tc070-tag" и "regression"
+  GET /app/rest/builds/id:{build_id}/tags → содержит "tc070-tag" и "regression"
 
 Cleanup:
-  PUT /builds/id:{build_id}/tags → { "tag": [] }  # очищаем
+  PUT /app/rest/builds/id:{build_id}/tags → { "tag": [] }  # очищаем
 ```
 
 ---
@@ -2405,7 +2407,7 @@ Cleanup:
 ```
 Arrange:
   # Создаём investigation для developer
-  POST /investigations { scope:{buildType:{id:"TestProject_HelloWorld"}},
+  POST /app/rest/investigations { scope:{buildType:{id:"TestProject_HelloWorld"}},
     state:"TAKEN", assignee:{username:"developer"},
     resolution:{type:"whenFixed"}, target:{anyProblem:true} }
 
@@ -2444,7 +2446,7 @@ Assert:
   mute_id = body.id
 
 Cleanup:
-  DELETE /mutes/id:{mute_id}
+  DELETE /app/rest/mutes/id:{mute_id}
 ```
 
 ---
