@@ -1,17 +1,18 @@
 import base64
 import os
-from typing import Any, Generator
-
 import pytest
-from dotenv import load_dotenv
 
+from typing import Any, Generator
+from dotenv import load_dotenv
 from framework.clients.team_city_api_client import TeamCityApiClient
 from framework.data.entities.users import PROJECT_ADMIN, TestUser
 from framework.data.urls import URL
 from framework.steps.admin_steps import AdminSteps
 
+
 def pytest_configure():
     load_dotenv(".env")
+
 
 def _env(name: str) -> str:
     value = os.environ[f'{name}']
@@ -25,6 +26,7 @@ def _env_or_skip(name: str) -> str:
     if not value:
         pytest.skip(f"Environment variable '{name}' is not set")
     return value
+
 
 def basic_headers(username: str, password: str) -> dict[str, str]:
     raw = f"{username}:{password}".encode("utf-8")
@@ -59,6 +61,8 @@ def no_auth_headers() -> dict[str, str]:
 @pytest.fixture(scope="session")
 def invalid_auth_headers() -> dict[str, str]:
     return {"Authorization": "Bearer invalid_token"}
+
+
 def proj_admin_user() -> TestUser:
     """Данные проектного администратора из entities."""
     return PROJECT_ADMIN
@@ -116,11 +120,10 @@ def proj_admin(team_city_api_client: TeamCityApiClient, proj_admin_user: TestUse
     yield
     team_city_api_client.session.cookies.clear()
     team_city_api_client.guest_session.cookies.clear()
-    team_city_api_client.delete_user(
-        user_locator=proj_admin_user.locator,
-        headers=admin_headers
-    )
+    team_city_api_client.delete_user(user_locator=proj_admin_user.locator, headers=admin_headers)
+
 
 @pytest.fixture(scope='session')
 def proj_admin_headers(proj_admin) -> dict[str, str]:
     return PROJECT_ADMIN.token
+
