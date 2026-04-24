@@ -40,9 +40,9 @@ class TeamCityApiClient(BaseHttpApiClient):
         uri = '/app/rest/buildQueue'
         return self.request('post', uri, headers=headers, data=data, **kwargs)
 
-    @allure.step('POST /app/rest/buildQueue/{queuedBuildLocator}')
+    @allure.step('POST /app/rest/buildQueue/{queued_build_locator}')
     def cancel_queued_build(self, queued_build_locator: str, headers: dict, data: dict | None = None, **kwargs) -> requests.Response | dict:
-        """Method /app/rest/buildQueue/{queuedBuildLocator}"""
+        """Method /app/rest/buildQueue/{queued_build_locator}"""
         uri = f'/app/rest/buildQueue/{queued_build_locator}'
         return self.request('post', uri, headers=headers, data=data, **kwargs)
 
@@ -100,9 +100,9 @@ class TeamCityApiClient(BaseHttpApiClient):
         uri = f'/app/rest/projects/{project_locator}'
         return self.request('get', uri, headers=headers, **kwargs)
 
-    @allure.step('DELETE /app/rest/projects/{projectLocator}')
+    @allure.step('DELETE /app/rest/projects/{project_locator}')
     def delete_project(self, project_locator: str, headers: dict, **kwargs) -> requests.Response | dict:
-        """Method /app/rest/projects/{projectLocator}"""
+        """Method /app/rest/projects/{project_locator}"""
         uri = f'/app/rest/projects/{project_locator}'
         return self.request('delete', uri, headers=headers, check_status=None, **kwargs)
 
