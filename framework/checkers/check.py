@@ -8,12 +8,7 @@ from pydantic import BaseModel
 
 @allure.step('Проверить, что модель ответа равна ожидаемой')
 def check_json_schema(response: requests.Response | dict, schema: type[BaseModel] | dict) -> None:
-    """
-    Function to check json_schema for response
-    :param response:
-    :param schema:
-    :return:
-    """
+    """Function to check json_schema for response"""
     if isinstance(response, requests.Response):
         response = response.json()
     if not isinstance(schema, dict):
@@ -23,13 +18,7 @@ def check_json_schema(response: requests.Response | dict, schema: type[BaseModel
 
 @allure.step('Проверить, что статус код равен {expected_status_code}')
 def check_status_code(response: requests.Response, expected_status_code: int) -> None:
-    """
-    Function to check expected_status_code in response
-    :param response:
-    :param expected_status_code:
-    :return:
-    :raises AssertionError
-    """
+    """Function to check expected_status_code in response"""
     actual_status_code = response.status_code
 
     assert_that(
@@ -40,3 +29,8 @@ def check_status_code(response: requests.Response, expected_status_code: int) ->
         f'{response.content}',
     )
 
+def check_canceled_build_status(response: requests.Response, expected_status: str) -> None:
+    """Function to check expected_status in response"""
+    status_text = response.json().get('statusText')
+
+    assert_that(status_text, equal_to(expected_status), f'statusText was expected to be {expected_status} but was {status_text}')

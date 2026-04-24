@@ -127,3 +127,49 @@ def proj_admin(team_city_api_client: TeamCityApiClient, proj_admin_user: TestUse
 def proj_admin_headers(proj_admin) -> dict[str, str]:
     return PROJECT_ADMIN.token
 
+
+@pytest.fixture()
+def created_project(team_city_api_client: TeamCityApiClient, admin_headers: dict[str, str]) -> Generator[str, Any, None]:
+    """
+    Создаёт временный проект и удаляет его после теста.
+    Возвращает external id созданного проекта.
+    """
+    project_id = f'AT_PRJ_{uuid4().hex[:8]}'
+    payload = {
+        'id': project_id,
+        'name': f'AT Project {project_id}',
+        'parentProject': {'locator': 'id:_Root'},
+        'copyAllAssociatedSettings': False,
+    }
+
+    team_city_api_client.add_project(headers=admin_headers, data=payload)
+    yield project_id
+
+    team_city_api_client.delete_project(
+        project_locator=f'id:{project_id}',
+        headers=admin_headers
+    )
+
+
+@pytest.fixture()
+def created_build_type(team_city_api_client: TeamCityApiClient, admin_headers: dict[str, str], created_project) -> Generator[str, Any, None]:
+    """
+    Создаёт временный buildType и удаляет его после теста.
+    Использует проект из TC_PROJECT_ID или TestProject по умолчанию.
+    """
+    build_type_id = f'AT_{uuid4().hex[:8]}'
+    payload = {
+        'id': build_type_id,
+        'name': f'AT {build_type_id}',
+        'project': {'id': created_project},
+    }
+
+    team_city_api_client.add_build_type(headers=admin_headers, data=payload)
+    yield build_type_id
+
+    team_city_api_client.request(
+        method='delete',
+        uri=f'/app/rest/buildTypes/id:{build_type_id}',
+        headers=admin_headers,
+        check_status=None,
+    )
