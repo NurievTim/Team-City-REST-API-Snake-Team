@@ -103,6 +103,7 @@ class BaseHttpApiClient:
         headers = headers or {}
 
         current_session = self.guest_session if use_guest_session else self.session
+        current_session.cookies.clear()
 
         if isinstance(headers, BaseModel):
             headers = headers.model_dump(by_alias=True, exclude_none=True)

@@ -40,23 +40,23 @@ class TeamCityApiClient(BaseHttpApiClient):
         uri = '/app/rest/buildQueue'
         return self.request('post', uri, headers=headers, data=data, **kwargs)
 
-    @allure.step('POST /app/rest/buildQueue/{queuedBuildLocator}')
+    @allure.step('POST /app/rest/buildQueue/{queued_build_locator}')
     def cancel_queued_build(self, queued_build_locator: str, headers: dict, data: dict | None = None, **kwargs) -> requests.Response | dict:
-        """Method /app/rest/buildQueue/{queuedBuildLocator}"""
+        """Method /app/rest/buildQueue/{queued_build_locator}"""
         uri = f'/app/rest/buildQueue/{queued_build_locator}'
         return self.request('post', uri, headers=headers, data=data, **kwargs)
 
-    @allure.step('POST /app/rest/builds/{buildLocator}')
+    @allure.step('POST /app/rest/builds/{build_locator}')
     def cancel_running_build(self, build_locator: str, headers: dict, data: dict | None = None, **kwargs) -> requests.Response | dict:
-        """Method /app/rest/builds/{buildLocator}"""
+        """Method /app/rest/builds/{build_locator}"""
         uri = f'/app/rest/builds/{build_locator}'
         return self.request('post', uri, headers=headers, data=data, **kwargs)
 
-    @allure.step('GET /app/rest/builds/{buildLocator}')
+    @allure.step('GET /app/rest/builds/{build_locator}')
     def get_build(self, build_locator: str, headers: dict, **kwargs) -> requests.Response | dict:
-        """Method /app/rest/builds/{buildLocator}"""
-        uri = '/app/rest/builds/{buildLocator}'
-        return self.request('get', uri, headers=headers, buildLocator=build_locator, **kwargs)
+        """Method /app/rest/builds/{build_locator}"""
+        uri = f'/app/rest/builds/{build_locator}'
+        return self.request('get', uri, headers=headers, **kwargs)
 
     @allure.step('GET /app/rest/builds')
     def get_builds(self, headers: dict, **kwargs) -> requests.Response | dict:
@@ -64,21 +64,21 @@ class TeamCityApiClient(BaseHttpApiClient):
         uri = '/app/rest/builds'
         return self.request('get', uri, headers=headers, **kwargs)
 
-    @allure.step('GET /app/rest/builds/{buildLocator}/resulting-properties')
+    @allure.step('GET /app/rest/builds/{build_locator}/resulting-properties')
     def get_build_resulting_properties(self, build_locator: str, headers: dict, **kwargs) -> requests.Response | dict:
-        """Method /app/rest/builds/{buildLocator}/resulting-properties"""
+        """Method /app/rest/builds/{build_locator}/resulting-properties"""
         uri = f'/app/rest/builds/{build_locator}/resulting-properties'
         return self.request('get', uri, headers=headers, **kwargs)
 
-    @allure.step('GET /app/rest/builds/{buildLocator}/artifacts/files/{path}')
+    @allure.step('GET /app/rest/builds/{build_locator}/artifacts/files/{path}')
     def download_build_artifact(self, build_locator: str, path: str, headers: dict, **kwargs) -> requests.Response | dict:
-        """Method /app/rest/builds/{buildLocator}/artifacts/files/{path}"""
+        """Method /app/rest/builds/{build_locator}/artifacts/files/{path}"""
         uri = f'/app/rest/builds/{build_locator}/artifacts/files/{path}'
         return self.request('get', uri, headers=headers, **kwargs)
 
-    @allure.step('GET /app/rest/builds/{buildLocator}/statistics')
+    @allure.step('GET /app/rest/builds/{build_locator}/statistics')
     def get_build_statistics(self, build_locator: str, headers: dict, **kwargs) -> requests.Response | dict:
-        """Method /app/rest/builds/{buildLocator}/statistics"""
+        """Method /app/rest/builds/{build_locator}/statistics"""
         uri = f'/app/rest/builds/{build_locator}/statistics'
         return self.request('get', uri, headers=headers, **kwargs)
 
@@ -94,21 +94,21 @@ class TeamCityApiClient(BaseHttpApiClient):
         uri = '/app/rest/projects'
         return self.request('post', uri, headers=headers, data=data, **kwargs)
 
-    @allure.step('GET /app/rest/projects/{projectLocator}')
+    @allure.step('GET /app/rest/projects/{project_locator}')
     def get_project(self, project_locator: str, headers: dict, **kwargs) -> requests.Response | dict:
-        """Method /app/rest/projects/{projectLocator}"""
+        """Method /app/rest/projects/{project_locator}"""
         uri = f'/app/rest/projects/{project_locator}'
         return self.request('get', uri, headers=headers, **kwargs)
 
-    @allure.step('DELETE /app/rest/projects/{projectLocator}')
+    @allure.step('DELETE /app/rest/projects/{project_locator}')
     def delete_project(self, project_locator: str, headers: dict, **kwargs) -> requests.Response | dict:
-        """Method /app/rest/projects/{projectLocator}"""
+        """Method /app/rest/projects/{project_locator}"""
         uri = f'/app/rest/projects/{project_locator}'
         return self.request('delete', uri, headers=headers, check_status=None, **kwargs)
 
-    @allure.step('PUT /app/rest/projects/{projectLocator}/archived')
+    @allure.step('PUT /app/rest/projects/{project_locator}/archived')
     def set_project_archived(self, project_locator: str, headers: dict, data: str | dict, **kwargs) -> requests.Response | dict:
-        """Method /app/rest/projects/{projectLocator}/archived"""
+        """Method /app/rest/projects/{project_locator}/archived"""
         uri = f'/app/rest/projects/{project_locator}/archived'
         return self.request('put', uri, headers=headers, data=data, **kwargs)
 
@@ -124,39 +124,39 @@ class TeamCityApiClient(BaseHttpApiClient):
         uri = '/app/rest/buildTypes'
         return self.request('get', uri, headers=headers, **kwargs)
 
-    @allure.step('GET /app/rest/buildTypes/{buildTypeLocator}/triggers')
+    @allure.step('GET /app/rest/buildTypes/{build_type_locator}/triggers')
     def get_build_type_triggers(self, build_type_locator: str, headers: dict, **kwargs) -> requests.Response | dict:
-        """Method /app/rest/buildTypes/{buildTypeLocator}/triggers"""
+        """Method /app/rest/buildTypes/{build_type_locator}/triggers"""
         uri = f'/app/rest/buildTypes/{build_type_locator}/triggers'
         return self.request('get', uri, headers=headers, **kwargs)
 
-    @allure.step('PUT /app/rest/buildTypes/{buildTypeLocator}/paused')
+    @allure.step('PUT /app/rest/buildTypes/{build_type_locator}/paused')
     def set_build_type_paused(self, build_type_locator: str, headers: dict, data: str | dict, **kwargs) -> requests.Response | dict:
-        """Method /app/rest/buildTypes/{buildTypeLocator}/paused"""
+        """Method /app/rest/buildTypes/{build_type_locator}/paused"""
         uri = f'/app/rest/buildTypes/{build_type_locator}/paused'
         return self.request('put', uri, headers=headers, data=data, **kwargs)
 
-    @allure.step('PUT /app/rest/buildTypes/{buildTypeLocator}/parameters/{name}')
+    @allure.step('PUT /app/rest/buildTypes/{build_type_locator}/parameters/{name}')
     def set_build_type_parameter(self, build_type_locator: str, name: str, headers: dict, data: str | dict, **kwargs) -> requests.Response | dict:
-        """Method /app/rest/buildTypes/{buildTypeLocator}/parameters/{name}"""
+        """Method /app/rest/buildTypes/{build_type_locator}/parameters/{name}"""
         uri = f'/app/rest/buildTypes/{build_type_locator}/parameters/{name}'
         return self.request('put', uri, headers=headers, data=data, **kwargs)
 
-    @allure.step('GET /app/rest/buildTypes/{buildTypeLocator}/parameters/{name}')
+    @allure.step('GET /app/rest/buildTypes/{build_type_locator}/parameters/{name}')
     def get_build_type_parameter(self, build_type_locator: str, name: str, headers: dict, **kwargs) -> requests.Response | dict:
-        """Method /app/rest/buildTypes/{buildTypeLocator}/parameters/{name}"""
+        """Method /app/rest/buildTypes/{build_type_locator}/parameters/{name}"""
         uri = f'/app/rest/buildTypes/{build_type_locator}/parameters/{name}'
         return self.request('get', uri, headers=headers, **kwargs)
 
-    @allure.step('POST /app/rest/buildTypes/{buildTypeLocator}/move')
+    @allure.step('POST /app/rest/buildTypes/{build_type_locator}/move')
     def move_build_type(self, build_type_locator: str, headers: dict, **kwargs) -> requests.Response | dict:
-        """Method /app/rest/buildTypes/{buildTypeLocator}/move"""
+        """Method /app/rest/buildTypes/{build_type_locator}/move"""
         uri = f'/app/rest/buildTypes/{build_type_locator}/move'
         return self.request('post', uri, headers=headers, **kwargs)
 
-    @allure.step('POST /app/rest/projects/{projectLocator}/buildTypes')
+    @allure.step('POST /app/rest/projects/{project_locator}/buildTypes')
     def copy_build_type_to_project(self, project_locator: str, headers: dict, data: dict, **kwargs) -> requests.Response | dict:
-        """Method /app/rest/projects/{projectLocator}/buildTypes"""
+        """Method /app/rest/projects/{project_locator}/buildTypes"""
         uri = f'/app/rest/projects/{project_locator}/buildTypes'
         return self.request('post', uri, headers=headers, data=data, **kwargs)
 
@@ -166,9 +166,9 @@ class TeamCityApiClient(BaseHttpApiClient):
         uri = '/app/rest/vcs-roots'
         return self.request('post', uri, headers=headers, data=data, **kwargs)
 
-    @allure.step('DELETE /app/rest/vcs-roots/{vcsRootLocator}')
+    @allure.step('DELETE /app/rest/vcs-roots/{vcs_root_locator}')
     def delete_vcs_root(self, vcs_root_locator: str, headers: dict, **kwargs) -> requests.Response | dict:
-        """Method /app/rest/vcs-roots/{vcsRootLocator}"""
+        """Method /app/rest/vcs-roots/{vcs_root_locator}"""
         uri = f'/app/rest/vcs-roots/{vcs_root_locator}'
         return self.request('delete', uri, headers=headers, check_status=None, **kwargs)
 
@@ -184,27 +184,27 @@ class TeamCityApiClient(BaseHttpApiClient):
         uri = '/app/rest/agentPools'
         return self.request('post', uri, headers=headers, data=data, **kwargs)
 
-    @allure.step('DELETE /app/rest/agentPools/{agentPoolLocator}')
+    @allure.step('DELETE /app/rest/agentPools/{agent_pool_locator}')
     def delete_agent_pool(self, agent_pool_locator: str, headers: dict, **kwargs) -> requests.Response | dict:
-        """Method /app/rest/agentPools/{agentPoolLocator}"""
+        """Method /app/rest/agentPools/{agent_pool_locator}"""
         uri = f'/app/rest/agentPools/{agent_pool_locator}'
         return self.request('delete', uri, headers=headers, check_status=None, **kwargs)
 
-    @allure.step('GET /app/rest/agentPools/{agentPoolLocator}/agents')
+    @allure.step('GET /app/rest/agentPools/{agent_pool_locator}/agents')
     def get_agent_pool_agents(self, agent_pool_locator: str, headers: dict, **kwargs) -> requests.Response | dict:
-        """Method /app/rest/agentPools/{agentPoolLocator}/agents"""
+        """Method /app/rest/agentPools/{agent_pool_locator}/agents"""
         uri = f'/app/rest/agentPools/{agent_pool_locator}/agents'
         return self.request('get', uri, headers=headers, **kwargs)
 
-    @allure.step('PUT /app/rest/agents/{agentLocator}/enabledInfo')
+    @allure.step('PUT /app/rest/agents/{agent_locator}/enabledInfo')
     def set_agent_enabled_info(self, agent_locator: str, headers: dict, data: dict, **kwargs) -> requests.Response | dict:
-        """Method /app/rest/agents/{agentLocator}/enabledInfo"""
+        """Method /app/rest/agents/{agent_locator}/enabledInfo"""
         uri = f'/app/rest/agents/{agent_locator}/enabledInfo'
         return self.request('put', uri, headers=headers, data=data, **kwargs)
 
-    @allure.step('PUT /app/rest/agents/{agentLocator}/authorizedInfo')
+    @allure.step('PUT /app/rest/agents/{agent_locator}/authorizedInfo')
     def set_agent_authorized_info(self, agent_locator: str, headers: dict, data: dict, **kwargs) -> requests.Response | dict:
-        """Method /app/rest/agents/{agentLocator}/authorizedInfo"""
+        """Method /app/rest/agents/{agent_locator}/authorizedInfo"""
         uri = f'/app/rest/agents/{agent_locator}/authorizedInfo'
         return self.request('put', uri, headers=headers, data=data, **kwargs)
 
@@ -214,27 +214,27 @@ class TeamCityApiClient(BaseHttpApiClient):
         uri = '/app/rest/users'
         return self.request('post', uri, headers=headers, data=data, **kwargs)
 
-    @allure.step('DELETE /app/rest/users/{userLocator}')
+    @allure.step('DELETE /app/rest/users/{user_locator}')
     def delete_user(self, user_locator: str, headers: dict, **kwargs) -> requests.Response | dict:
-        """Method /app/rest/users/{userLocator}"""
+        """Method /app/rest/users/{user_locator}"""
         uri = f'/app/rest/users/{user_locator}'
         return self.request('delete', uri, headers=headers, check_status=None, **kwargs)
 
-    @allure.step('PUT /app/rest/users/{userLocator}/roles/{roleId}/{scope}')
+    @allure.step('PUT /app/rest/users/{user_locator}/roles/{role_id}/{scope}')
     def add_role_to_user(self, user_locator: str, role_id: str, scope: str, headers: dict, **kwargs) -> requests.Response | dict:
-        """Method /app/rest/users/{userLocator}/roles/{roleId}/{scope}"""
+        """Method /app/rest/users/{user_locator}/roles/{role_id}/{scope}"""
         uri = f'/app/rest/users/{user_locator}/roles/{role_id}/{scope}'
         return self.request('put', uri, headers=headers, **kwargs)
 
-    @allure.step('POST /app/rest/users/{userLocator}/tokens/{name}')
+    @allure.step('POST /app/rest/users/{user_locator}/tokens/{name}')
     def add_user_token(self, user_locator: str, name: str, headers: dict, **kwargs) -> requests.Response | dict:
-        """Method /app/rest/users/{userLocator}/tokens/{name}"""
+        """Method /app/rest/users/{user_locator}/tokens/{name}"""
         uri = f'/app/rest/users/{user_locator}/tokens/{name}'
         return self.request('post', uri, headers=headers, **kwargs)
 
-    @allure.step('DELETE /app/rest/users/{userLocator}/tokens/{name}')
+    @allure.step('DELETE /app/rest/users/{user_locator}/tokens/{name}')
     def delete_user_token(self, user_locator: str, name: str, headers: dict, **kwargs) -> requests.Response | dict:
-        """Method /app/rest/users/{userLocator}/tokens/{name}"""
+        """Method /app/rest/users/{user_locator}/tokens/{name}"""
         uri = f'/app/rest/users/{user_locator}/tokens/{name}'
         return self.request('delete', uri, headers=headers, check_status=None, **kwargs)
 
@@ -268,9 +268,9 @@ class TeamCityApiClient(BaseHttpApiClient):
         uri = '/app/rest/problemOccurrences'
         return self.request('get', uri, headers=headers, **kwargs)
 
-    @allure.step('POST /app/rest/builds/{buildLocator}/tags')
+    @allure.step('POST /app/rest/builds/{build_locator}/tags')
     def add_build_tag(self, build_locator: str, headers: dict, data: dict | None = None, **kwargs) -> requests.Response | dict:
-        """Method /app/rest/builds/{buildLocator}/tags"""
+        """Method /app/rest/builds/{build_locator}/tags"""
         uri = f'/app/rest/builds/{build_locator}/tags'
         return self.request('post', uri, headers=headers, data=data, **kwargs)
 
@@ -278,4 +278,10 @@ class TeamCityApiClient(BaseHttpApiClient):
     def get_rest_help(self, headers: dict, **kwargs) -> requests.Response | dict:
         """Method /app/rest/$help"""
         uri = '/app/rest/$help'
+        return self.request('get', uri, headers=headers, **kwargs)
+
+    @allure.step('GET /app/rest/csrf')
+    def get_csrf_token(self, headers: dict, **kwargs) -> requests.Response:
+        """Method /app/rest/csrf — возвращает CSRF-токен как plain text."""
+        uri = '/app/rest/csrf'
         return self.request('get', uri, headers=headers, **kwargs)
