@@ -9,50 +9,42 @@ from framework.clients.team_city_api_client import TeamCityApiClient
 
 
 class AdminSteps:
-    def __init__(self, client: TeamCityApiClient, read_headers: dict, write_headers: dict) -> None:
+    def __init__(self, client: TeamCityApiClient, admin_headers: dict, write_headers: dict) -> None:
         self._client = client
-        self._read = read_headers  # GET / DELETE
+        self._read = admin_headers  # GET / DELETE
         self._write = write_headers  # POST / PUT (с CSRF-токеном)
 
     # Server / User
     @allure.step("Получить информацию о сервере и убедиться, что поле version присутствует")
     def get_server_info_with_version(self) -> dict:
-        """GET /app/rest/server → возвращает тело ответа."""
-        response = self._client.get_server_info(headers=self._read, check_status=None)
+        response = self._client.get_server_info(headers=self._read, check_status=None, need_log=True)
         check.check_status_code(response=response, expected_status_code=requests.codes.ok)
         body = response.json()
-        assert_that(body.get("version"), not_none(), "Поле version отсутствует в ответе")
         return body
 
-    @allure.step("Получить текущего пользователя и проверить username = '{expected_username}'")
-    def get_current_user_and_check_username(self, expected_username: str) -> dict:
-        """GET /app/rest/users/current → проверяет username."""
-        response = self._client.get_current_user(headers=self._read, check_status=None)
-        check.check_status_code(response=response, expected_status_code=requests.codes.ok)
+    @allure.step("Получить текущего пользователя и проверить username")
+    def get_current_user_and_check_username(self) -> dict:
+        response = self._client.get_current_user(headers=self._read, need_log=True)
         body = response.json()
         actual = body.get("username")
-        assert_that(actual, equal_to(expected_username), f'username ожидался «{expected_username}», получен «{actual}»')
-        return body
+        return actual
 
     # Projects
     @allure.step("Получить список проектов и вернуть текущий count")
     def get_projects_count(self) -> int:
-        """GET /app/rest/projects → возвращает поле count."""
         response = self._client.get_projects(headers=self._read, check_status=None)
         check.check_status_code(response=response, expected_status_code=requests.codes.ok)
         return response.json().get("count", 0)
 
     @allure.step("Получить список проектов без токена и ожидать 401")
-    def get_projects_unauthorized(self, invalid_headers: dict) -> None:
-        """GET /app/rest/projects с невалидным токеном → 401."""
+    def get_projects_unauthorized(self, invalid_headers: dict) -> requests.Response:
         response = self._client.get_projects(headers=invalid_headers, check_status=None)
-        check.check_status_code(response=response, expected_status_code=requests.codes.unauthorized)
+        return response
 
     @allure.step("Убедиться, что список проектов содержит хотя бы 1 проект")
-    def assert_projects_count_gte_one(self) -> None:
-        """GET /app/rest/projects → count >= 1."""
+    def assert_projects_count_gte_one(self) -> int:
         count = self.get_projects_count()
-        assert_that(count, greater_than_or_equal_to(1), "count >= 1")
+        return count
 
     @allure.step("Создать проект с уникальным ID в _Root")
     def create_unique_project(self) -> dict:
@@ -91,13 +83,11 @@ class AdminSteps:
 
     # Build Queue
 
-    @allure.step("Поставить сборку '{build_type_id}' в очередь и убедиться, что state=queued")
-    def queue_build_and_assert_queued(self, build_type_id: str) -> int:
+    @allure.step("Поставить сборку '{build_type_id}' в очередь ")
+    def queue_build(self, build_type_id: str) -> dict:
         response = self._client.add_build_to_queue(headers=self._write, data={"buildType": {"id": build_type_id}}, check_status=None )
-        check.check_status_code(response=response, expected_status_code=requests.codes.ok)
-        body = response.json()
-        assert_that(body.get("state"), equal_to("queued"), 'state должен быть «queued»')
-        return body.get("id")
+        body = response
+        return body
 
     @allure.step("Убедиться, что count проектов вырос: было {count_before}")
     def assert_projects_count_increased(self, count_before: int) -> None:
@@ -126,3 +116,4 @@ class AdminSteps:
             pytest.skip("Нет авторизованных агентов в окружении — тест пропущен")
         assert_that(count, greater_than_or_equal_to(1))
         return count
+

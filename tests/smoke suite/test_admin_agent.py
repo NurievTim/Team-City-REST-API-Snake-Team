@@ -11,3 +11,5 @@ class TestAgents:
     @allure.title("GET /agents?locator=authorized:true — HTTP 200, >= 1 авторизованный агент")
     def test_get_authorized_agents(self, admin_steps: AdminSteps) -> None:
         admin_steps.get_authorized_agents_and_assert()
+
+
