@@ -1,6 +1,5 @@
 import base64
 import os
-
 import pytest
 
 from typing import Any, Generator
@@ -13,6 +12,7 @@ from framework.steps.admin_steps import AdminSteps
 pytest_plugins = [
     'framework.data.fixtures.api_fixtures'
 ]
+
 
 def pytest_configure():
     load_dotenv(".env")
@@ -78,15 +78,15 @@ def unauth_headers(no_auth_headers: dict[str, str]) -> dict[str, str]:
 
 
 @pytest.fixture(scope="session")
-def csrf_token(team_city_api_client: TeamCityApiClient, read_headers: dict) -> str:
-    response = team_city_api_client.get_csrf_token(headers=read_headers, check_status=None)
+def csrf_token(team_city_api_client: TeamCityApiClient, admin_headers: dict) -> str:
+    response = team_city_api_client.get_csrf_token(headers=admin_headers, check_status=None)
     return response.text.strip()
 
 
 @pytest.fixture(scope="session")
-def write_headers(read_headers: dict, csrf_token: str) -> dict[str, str]:
+def write_headers(admin_headers: dict, csrf_token: str) -> dict[str, str]:
     """Хедеры для POST / PUT запросов — Bearer + CSRF-токен."""
-    return {**read_headers, "X-TC-CSRF-Token": csrf_token}
+    return {**admin_headers, "X-TC-CSRF-Token": csrf_token}
 
 
 @pytest.fixture(scope="session")    # Создаёт проект
@@ -101,8 +101,8 @@ def project_with_build_type(request: pytest.FixtureRequest, admin_steps: AdminSt
 
 
 @pytest.fixture(scope='session')
-def admin_steps(team_city_api_client: TeamCityApiClient, read_headers: dict, write_headers: dict) -> AdminSteps:
-    return AdminSteps(client=team_city_api_client, read_headers=read_headers, write_headers=write_headers)
+def admin_steps(team_city_api_client: TeamCityApiClient, admin_headers: dict, write_headers: dict) -> AdminSteps:
+    return AdminSteps(client=team_city_api_client, admin_headers=admin_headers, write_headers=write_headers)
 
 
 def proj_admin(team_city_api_client: TeamCityApiClient, proj_admin_user: TestUser, admin_headers) \
