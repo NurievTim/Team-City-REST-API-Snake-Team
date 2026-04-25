@@ -1,6 +1,6 @@
 import allure
 import requests
-from hamcrest import assert_that, equal_to, contains_string
+from hamcrest import assert_that, equal_to, contains_string, greater_than_or_equal_to
 from jsonschema import validate
 from pydantic import BaseModel
 
@@ -29,7 +29,7 @@ def check_status_code(response: requests.Response, expected_status_code: int) ->
     )
 
 @allure.step('Проверить, что состояние билда равна {expected_state}')
-def check_build_state(response: requests.Response, expected_state: str) -> None:
+def check_build_state(response: requests.Response | dict, expected_state: str) -> None:
     """Function to check state in response"""
     state = response.json().get('state')
 
@@ -44,3 +44,11 @@ def check_build_status(response: requests.Response, expected_status: str) -> Non
 
     assert_that(status, contains_string(expected_status),
                 f'State was expected to be {expected_status} but was {status}')
+
+
+@allure.step('Проверить, что авторизованных агентов >= 1 ')
+def check_agent_is_authorize(response: requests.Response) -> None:
+    """Function to check authorized agents in response >= 1"""
+    count = response.json().get('count')
+    assert_that(count, greater_than_or_equal_to(1),
+                f' {count} is False')

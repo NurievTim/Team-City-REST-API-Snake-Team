@@ -4,6 +4,8 @@ import pytest
 import requests
 
 from hamcrest import assert_that, equal_to, greater_than, greater_than_or_equal_to, not_none
+from requests import Response
+
 from framework.checkers import check
 from framework.clients.team_city_api_client import TeamCityApiClient
 
@@ -107,13 +109,8 @@ class AdminSteps:
 
     # Agents
 
-    @allure.step("Получить авторизованные агенты и убедиться, что их >= 1")
-    def get_authorized_agents_and_assert(self) -> int:
-        response = self._client.get_agents(headers=self._read, params={"locator": "authorized:true"}, check_status=None)
-        check.check_status_code(response=response, expected_status_code=requests.codes.ok)
-        count = response.json().get("count", 0)
-        if count == 0:
-            pytest.skip("Нет авторизованных агентов в окружении — тест пропущен")
-        assert_that(count, greater_than_or_equal_to(1))
-        return count
+    @allure.step("Получить авторизованные агенты")
+    def get_authorized_agents(self) -> Response | dict:
+        response = self._client.get_agents(headers=self._read, params={"locator": "authorized:true"})
+        return response
 
