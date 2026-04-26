@@ -1,9 +1,10 @@
-import os
 import allure
 import pytest
 import requests
 
 from dotenv import load_dotenv
+from src.models.responses import AgentsListResponse
+from src.specs.request_spec import RequestSpecs
 
 load_dotenv()
 
@@ -15,14 +16,11 @@ class TestAgents:
     @allure.title("GET /agents?locator=authorized:true — HTTP 200, >= 1 авторизованный агент")
     def test_get_authorized_agents(self):
         response = requests.get(
-            url=f'http://localhost:8111/app/rest/agents',
-            headers={
-                'Authorization': f'Bearer {os.getenv("TC_ADMIN_TOKEN")}',
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
+            url=f'{RequestSpecs.BASE_URL}agents',
+            headers=RequestSpecs.admin_base_headers()['headers'],
             params={'locator': 'authorized:true'},
         )
 
         assert response.status_code == 200
-        assert response.json().get('count') >= 1
+        body = AgentsListResponse(**response.json())
+        assert body.count >= 1

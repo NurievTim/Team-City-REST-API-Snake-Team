@@ -5,6 +5,9 @@ import requests
 import allure
 
 from dotenv import load_dotenv
+from src.specs.request_spec import RequestSpecs
+from src.models.requests import CreateProjectRequest, ParentProject, CreateBuildTypeRequest, ProjectRef, QueueBuildRequest, BuildTypeRef
+from src.models.responses import QueueBuildResponse
 
 load_dotenv()
 
@@ -15,55 +18,53 @@ class TestBuilds:
     @allure.id("5")
     @allure.title("POST /buildQueue — поставить сборку в очередь, state=queued")
     def test_queue_build_state_is_queued(self):
-        csrf_response = requests.get(
-            url=f'http://localhost:8111/app/rest/csrf',
-            headers={
-                'Authorization': f'Bearer {os.getenv("TC_ADMIN_TOKEN")}',
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            }
-        )
-        write_headers = {
-            'Authorization': f'Bearer {os.getenv("TC_ADMIN_TOKEN")}',
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'X-TC-CSRF-Token': csrf_response.text.strip()
-        }
+        csrf_token = requests.get(
+            url=f'{RequestSpecs.BASE_URL}csrf',
+            headers=RequestSpecs.admin_base_headers()['headers'],
+        ).text.strip()
+        write_headers = {**RequestSpecs.admin_base_headers()['headers'], 'X-TC-CSRF-Token': csrf_token}
 
         uid = uuid.uuid4().hex[:8].upper()
-        project_id = f'SmokeProject{uid}'
-        build_type_id = f'{project_id}_Build'
-
-        requests.post(
-            url=f'http://localhost:8111/app/rest/projects',
-            headers=write_headers,
-            json={
-                'id': project_id,
-                'name': f'Smoke Test Project {uid}',
-                'parentProject': {'locator': '_Root'},
-            },
+        project = CreateProjectRequest(
+            id=f'SmokeProject{uid}',
+            name=f'Smoke Test Project {uid}',
+            parentProject=ParentProject(locator='_Root'),
         )
 
         requests.post(
-            url=f'http://localhost:8111/app/rest/buildTypes',
+            url=f'{RequestSpecs.BASE_URL}projects',
             headers=write_headers,
-            json={
-                'id': build_type_id,
-                'name': 'Smoke Build',
-                'project': {'id': project_id},
-            },
+            json=project.model_dump(),
+        )
+
+        build_type = CreateBuildTypeRequest(
+            id=f'{project.id}_Build',
+            name='Smoke Build',
+            project=ProjectRef(id=project.id),
+        )
+
+        requests.post(
+            url=f'{RequestSpecs.BASE_URL}buildTypes',
+            headers=write_headers,
+            json=build_type.model_dump(),
+        )
+
+        queue_request = QueueBuildRequest(
+            buildType=BuildTypeRef(id=build_type.id)
         )
 
         response = requests.post(
-            url=f'http://localhost:8111/app/rest/buildQueue',
+            url=f'{RequestSpecs.BASE_URL}buildQueue',
             headers=write_headers,
-            json={'buildType': {'id': build_type_id}},
+            json=queue_request.model_dump(),
         )
 
         assert response.status_code == 200
-        assert 'queued' in response.json().get('state', '')
+        body = QueueBuildResponse(**response.json())
+        assert body.state == 'queued'
 
         requests.delete(
-            url=f'http://localhost:8111/app/rest/projects/id:{project_id}',
+            url=f'{RequestSpecs.BASE_URL}projects/id:{project.id}',
             headers=write_headers,
         )
+

@@ -5,6 +5,9 @@ import requests
 import uuid
 
 from dotenv import load_dotenv
+from src.specs.request_spec import RequestSpecs
+from src.models.requests import CreateProjectRequest, ParentProject
+from src.models.responses import ProjectsListResponse, ProjectResponse
 
 load_dotenv()
 
@@ -16,12 +19,8 @@ class TestProjects:
     @allure.title("GET /projects — HTTP 401 при невалидном токене")
     def test_get_projects_unauthorized(self):
         response = requests.get(
-            url=f'http://localhost:8111/app/rest/projects',
-            headers={
-                'Authorization': 'Bearer invalid_token',
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            }
+            url=f'{RequestSpecs.BASE_URL}projects',
+            headers=RequestSpecs.unauth_spec()['headers']
         )
 
         assert response.status_code == 401
@@ -30,71 +29,53 @@ class TestProjects:
     @allure.title("GET /projects — HTTP 200, count >= 1")
     def test_get_projects_count(self):
         response = requests.get(
-            url=f'http://localhost:8111/app/rest/projects',
-            headers={
-                'Authorization': f'Bearer {os.getenv("TC_ADMIN_TOKEN")}',
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            }
+            url=f'{RequestSpecs.BASE_URL}projects',
+            headers=RequestSpecs.admin_base_headers()['headers']
         )
 
         assert response.status_code == 200
-        assert response.json().get('count') >= 1
+        body = ProjectsListResponse(**response.json())
+        assert body.count >= 1
 
     @allure.id("6")
     @allure.title("POST /projects — создать проект, count вырос")
     def test_create_project_increases_count(self):
-        count_before = requests.get(
-            url=f'http://localhost:8111/app/rest/projects',
-            headers={
-                'Authorization': f'Bearer {os.getenv("TC_ADMIN_TOKEN")}',
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            }
-        ).json().get('count', 0)
+        count_before = ProjectsListResponse(**requests.get(
+            url=f'{RequestSpecs.BASE_URL}projects',
+            headers=RequestSpecs.admin_base_headers()['headers'],
+        ).json()).count
 
         uid = uuid.uuid4().hex[:8].upper()
-        project_id = f'SmokeProject{uid}'
-
-        csrf_response = requests.get(
-            url=f'http://localhost:8111/app/rest/csrf',
-            headers={
-                'Authorization': f'Bearer {os.getenv("TC_ADMIN_TOKEN")}',
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            }
+        project = CreateProjectRequest(
+            id=f'SmokeProject{uid}',
+            name=f'Smoke Test Project {uid}',
+            parentProject=ParentProject(locator='_Root'),
         )
-        write_headers = {
-            'Authorization': f'Bearer {os.getenv("TC_ADMIN_TOKEN")}',
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'X-TC-CSRF-Token': csrf_response.text.strip()
-        }
+
+        csrf_token = requests.get(
+            url=f'{RequestSpecs.BASE_URL}csrf',
+            headers=RequestSpecs.admin_base_headers()['headers']
+        ).text.strip()
+        write_headers = {**RequestSpecs.admin_base_headers()['headers'], 'X-TC-CSRF-Token': csrf_token}
 
         create_response = requests.post(
-            url=f'http://localhost:8111/app/rest/projects',
+            url=f'{RequestSpecs.BASE_URL}projects',
             headers=write_headers,
-            json={
-                'id': project_id,
-                'name': f'Smoke Test Project {uid}',
-                'parentProject': {'locator': '_Root'},
-            },
+            json=project.model_dump(),
         )
 
         assert create_response.status_code == 200
+        created = ProjectResponse(**create_response.json())
+        assert created.id == project.id
 
-        count_after = requests.get(
-            url=f'http://localhost:8111/app/rest/projects',
-            headers={
-                'Authorization': f'Bearer {os.getenv("TC_ADMIN_TOKEN")}',
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            }
-        ).json().get('count', 0)
+        count_after = ProjectsListResponse(**requests.get(
+            url=f'{RequestSpecs.BASE_URL}projects',
+            headers=RequestSpecs.admin_base_headers()['headers'],
+        ).json()).count
 
         assert count_after > count_before
 
         requests.delete(
-            url=f'http://localhost:8111/app/rest/projects/id:{project_id}',
+            url=f'{RequestSpecs.BASE_URL}projects/id:{project.id}',
             headers=write_headers,
         )
