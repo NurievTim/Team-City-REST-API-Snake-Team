@@ -1,8 +1,10 @@
-from http import HTTPStatus
+import requests
 
+from http import HTTPStatus
 from src.models.requests import CreateProjectRequest
 from src.models.responses import ProjectsListResponse, ProjectResponse
 from src.requests.requester import BaseRequester
+from src.specs.response_spec import ResponseSpecs
 
 
 class ProjectRequester(BaseRequester):
@@ -18,5 +20,6 @@ class ProjectRequester(BaseRequester):
             return ProjectResponse(**response.json())
 
     def delete_project(self, project_id: str) -> None:
-        self._delete(f'projects/id:{project_id}')
+        response = requests.delete(url=f'{self.base_url}projects/id:{project_id}', headers=self.headers)
+        ResponseSpecs.entity_was_deleted()(response)
 

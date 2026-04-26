@@ -1,9 +1,8 @@
 import os
+from src.configs.config import Config
 
 
 class RequestSpecs:
-    BASE_URL = 'http://localhost:8111/app/rest/'
-
     @staticmethod
     def default_req_headers():
         return {
@@ -15,7 +14,7 @@ class RequestSpecs:
     def unauth_spec():
         return {
             'headers': RequestSpecs.default_req_headers(),
-            'base_url': RequestSpecs.BASE_URL
+            'base_url': Config.get('baseurl')
         }
 
     @staticmethod
@@ -24,6 +23,6 @@ class RequestSpecs:
         headers['Authorization'] = f'Bearer {os.getenv("TC_ADMIN_TOKEN")}'
         return {
             'headers': headers,
-            'base_url': RequestSpecs.BASE_URL
+            'base_url': Config.get('baseurl')
         }
 
