@@ -1,0 +1,29 @@
+import os
+
+
+class RequestSpecs:
+    BASE_URL = 'http://localhost:8111/app/rest/'
+
+    @staticmethod
+    def default_req_headers():
+        return {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        }
+
+    @staticmethod
+    def unauth_spec():
+        return {
+            'headers': RequestSpecs.default_req_headers(),
+            'base_url': RequestSpecs.BASE_URL
+        }
+
+    @staticmethod
+    def admin_base_headers():
+        headers = RequestSpecs.default_req_headers()
+        headers['Authorization'] = f'Bearer {os.getenv("TC_ADMIN_TOKEN")}'
+        return {
+            'headers': headers,
+            'base_url': RequestSpecs.BASE_URL
+        }
+
