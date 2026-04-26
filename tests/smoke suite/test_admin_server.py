@@ -1,28 +1,42 @@
 import os
 import allure
 import pytest
+import requests
+from dotenv import load_dotenv
 
-from hamcrest import assert_that, not_none, equal_to
-from framework.steps.admin_steps import AdminSteps
+load_dotenv()
 
 
 @pytest.mark.smoke
 class TestServer:
 
-    @allure.id("1")    # сервер отвечает и возвращает версию
+    @allure.id("1")  # сервер отвечает и возвращает версию
     @allure.title("GET /server — HTTP 200, поле version присутствует")
-    def test_get_server_info(self, admin_steps: AdminSteps) -> None:
-        body = admin_steps.get_server_info_with_version()
+    def test_get_server_info(self):
+        response = requests.get(
+            url=f'http://localhost:8111/app/rest/server',
+            headers={
+                'Authorization': f'Bearer {os.getenv("TC_ADMIN_TOKEN")}',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            }
+        )
 
-        assert_that(body.get("version"), not_none(), "Поле version отсутствует в ответе")
+        assert response.status_code == 200
+        assert response.json().get('version') is not None
 
-    @allure.id("2")     # токен соответствует ожидаемому пользователю
+    @allure.id("2")  # токен соответствует ожидаемому пользователю
     @allure.title("GET /users/current — HTTP 200, username совпадает с TC_ADMIN_USERNAME")
-    def test_get_current_user(self, admin_steps: AdminSteps, ) -> None:
-        expected = os.getenv("TC_ADMIN_USERNAME")
-        if not expected:
-            pytest.skip("Переменная окружения TC_ADMIN_USERNAME не задана")
-        user = admin_steps.get_current_user_and_check_username()
+    def test_get_current_user(self):
+        response = requests.get(
+            url='http://localhost:8111/app/rest/users/current',
+            headers={
+                'Authorization': f'Bearer {os.getenv("TC_ADMIN_TOKEN")}',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            }
+        )
 
-        assert_that(user, equal_to(expected), f'username ожидался «{expected}», получен «{user}»')
+        assert response.status_code == 200
+        assert response.json().get('username') == os.getenv('TC_ADMIN_USERNAME')
 

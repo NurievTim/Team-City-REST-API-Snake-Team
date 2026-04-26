@@ -1,15 +1,4 @@
-allure-pytest==2.15.3
-curlify
+
 pytest
 requests
-pydantic
-faker
-rstr
-ruff
-pytest-xdist
-softest
-uuid
-PyHamcrest==2.1.0
-allure-python-commons
-jsonschema
-pytest-dotenv
+allure-pytest
