@@ -1,0 +1,41 @@
+from pydantic import BaseModel
+from typing import Optional
+
+
+class ServerInfoResponse(BaseModel):
+    version: str
+    buildDate: Optional[str] = None
+    buildNumber: Optional[str] = None
+
+
+class CurrentUserResponse(BaseModel):
+    username: str
+    id: Optional[int] = None
+    name: Optional[str] = None
+
+
+class ProjectResponse(BaseModel):
+    id: str
+    name: str
+
+
+class ProjectsListResponse(BaseModel):
+    count: int
+    project: Optional[list] = None
+
+
+class BuildTypeResponse(BaseModel):
+    id: str
+    name: str
+
+
+class QueueBuildResponse(BaseModel):
+    id: int
+    state: str
+    buildType: Optional[dict] = None
+
+
+class AgentsListResponse(BaseModel):
+    count: int
+    agent: Optional[list] = None
+
