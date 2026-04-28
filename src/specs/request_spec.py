@@ -12,17 +12,10 @@ class RequestSpecs:
 
     @staticmethod
     def unauth_spec():
-        return {
-            'headers': RequestSpecs.default_req_headers(),
-            'base_url': Config.get('baseurl')
-        }
+        return RequestSpecs.default_req_headers()
 
     @staticmethod
     def admin_base_headers():
         headers = RequestSpecs.default_req_headers()
         headers['Authorization'] = f'Bearer {os.getenv("TC_ADMIN_TOKEN")}'
-        return {
-            'headers': headers,
-            'base_url': Config.get('baseurl')
-        }
-
+        return headers
