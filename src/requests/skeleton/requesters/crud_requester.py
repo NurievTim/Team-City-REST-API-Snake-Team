@@ -13,26 +13,25 @@ class CrudRequester(HttpRequest, CrudEndpointInterface):
     def base_url(self) -> str:
         return f"{Config.get('baseurl')}"
 
-    def post(self, model: BaseModel, endpoint: Endpoint = None):
+    def post(self, model: BaseModel, endpoint: Endpoint = None) -> requests.Response:
         ep = endpoint or self.endpoint
         url = f'{self.base_url}{ep.value.url}'
         response = requests.post(url=url, json=model.model_dump(), headers=self.headers)
         self.response_spec(response)
-        if ep.value.response_model:
-            return ep.value.response_model(**response.json())
+        return response
 
-    def get(self, endpoint: Endpoint = None, locator: str = None, params: dict = None):
+    def get(self, endpoint: Endpoint = None, locator: str = None, params: dict = None) -> requests.Response:
         ep = endpoint or self.endpoint
         url = f'{self.base_url}{ep.value.url}'
         if locator:
             url = f'{url}/{locator}'
         response = requests.get(url=url, headers=self.headers, params=params)
         self.response_spec(response)
-        if ep.value.response_model:
-            return ep.value.response_model(**response.json())
+        return response
 
-    def delete(self, locator: str, endpoint: Endpoint = None):
+    def delete(self, locator: str, endpoint: Endpoint = None) -> requests.Response:
         ep = endpoint or self.endpoint
         url = f'{self.base_url}{ep.value.url}/{locator}'
         response = requests.delete(url=url, headers=self.headers)
         self.response_spec(response)
+        return response
