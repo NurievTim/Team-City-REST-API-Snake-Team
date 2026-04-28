@@ -4,9 +4,10 @@ import allure
 
 from dotenv import load_dotenv
 from src.specs.response_spec import ResponseSpecs
-from src.requests.build_requester import BuildRequester
-from src.requests.project_requester import ProjectRequester
 from src.specs.request_spec import RequestSpecs
+from src.requests.skeleton.requesters.build_requester import BuildRequester
+from src.requests.skeleton.requesters.project_requester import ProjectRequester
+from src.models.comparison.model_assertions import ModelAssertions
 from src.models.requests import (CreateProjectRequest, ParentProject, CreateBuildTypeRequest,
                                  ProjectRef, QueueBuildRequest, BuildTypeRef)
 
@@ -42,8 +43,7 @@ class TestBuilds:
             ResponseSpecs.request_return_ok(),
         ).create_build_type(build_type_request)
 
-        assert build_type.id == build_type_request.id
-        assert build_type.name == build_type_request.name
+        ModelAssertions(build_type_request, build_type).match()
         project_requester.delete_project(project_request.id)
 
     @allure.id("5")

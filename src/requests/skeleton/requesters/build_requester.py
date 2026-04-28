@@ -11,4 +11,3 @@ class BuildRequester(CrudRequester):
 
     def queue_build(self, queue_build_request: QueueBuildRequest) -> QueueBuildResponse:
         return self.post(model=queue_build_request, endpoint=Endpoint.QUEUE_BUILD)
-

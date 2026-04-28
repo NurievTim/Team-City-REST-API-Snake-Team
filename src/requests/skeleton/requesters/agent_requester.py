@@ -7,5 +7,3 @@ class AgentRequester(CrudRequester):
 
     def get_authorized_agents(self) -> AgentsListResponse:
         return self.get(endpoint=Endpoint.GET_AGENTS, params={'locator': 'authorized:true'})
-
-

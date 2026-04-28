@@ -3,9 +3,10 @@ import pytest
 import uuid
 
 from dotenv import load_dotenv
-from src.requests.project_requester import ProjectRequester
-from src.specs.request_spec import RequestSpecs
+from src.models.comparison.model_assertions import ModelAssertions
+from src.requests.skeleton.requesters.project_requester import ProjectRequester
 from src.models.requests import CreateProjectRequest, ParentProject
+from src.specs.request_spec import RequestSpecs
 from src.specs.response_spec import ResponseSpecs
 
 load_dotenv()
@@ -48,7 +49,7 @@ class TestProjects:
             parentProject=ParentProject(locator='_Root'),
         )
         created = requester.create_project(project_request)
-        assert created.id == project_request.id
+        ModelAssertions(project_request, created).match()
 
         count_after = requester.get_projects().count
         assert count_after > count_before

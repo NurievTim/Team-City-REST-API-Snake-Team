@@ -14,4 +14,3 @@ class ProjectRequester(CrudRequester):
 
     def delete_project(self, project_id: str) -> None:
         self.delete(locator=f'id:{project_id}', endpoint=Endpoint.DELETE_PROJECT)
-

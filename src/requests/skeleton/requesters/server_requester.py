@@ -10,4 +10,3 @@ class ServerRequester(CrudRequester):
 
     def get_current_user(self) -> CurrentUserResponse:
         return self.get(endpoint=Endpoint.GET_CURRENT_USER)
-
