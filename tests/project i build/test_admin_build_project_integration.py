@@ -1,6 +1,8 @@
 import allure
 import pytest
 
+from http import HTTPStatus
+
 
 @pytest.mark.smoke
 class TestProjectsIBuildConfig:
@@ -15,13 +17,20 @@ class TestProjectsIBuildConfig:
 
     @allure.id("21")
     @allure.title("DELETE /projects/{locator} — удалить проект, повторный GET возвращает 404")
-    def test_delete_project_and_get_404_after(self, get_project_requester, get_project_request):
+    def test_delete_project_and_get_404(self, get_project_requester, get_project_request, project_not_found):
         created = get_project_requester.create_project(get_project_request)
+        assert created.id == get_project_request.id
+
         get_project_requester.delete_project(get_project_request.id)
-        ProjectRequester(
-            RequestSpecs.admin_base_headers(),
-            ResponseSpecs.entity_was_not_found(),
-        ).get(
-            endpoint=Endpoint.GET_PROJECTS,
-            locator=f"id:{payload.id}",
-        )
+        response = project_not_found.get(locator=f"id:{get_project_request.id}")
+        assert response.status_code == HTTPStatus.NOT_FOUND
+
+    @allure.id("22")
+    @allure.title("POST /buildTypes — создать build configuration")
+    def test_create_build_configuration(self, build_requester, build_type_request):
+        created_build_type = build_requester.create_build_type(build_type_request)
+
+        assert created_build_type.id == build_type_request.id
+        assert created_build_type.name == build_type_request.name
+        build_requester.delete_build_type(build_type_request.id)
+
