@@ -21,7 +21,7 @@ class ModelAssertions:
                 raise AssertionError(f'Model comparison failed with mismatches fields: \n {result.mismatches}')
 
         else:
-            raise AssertionError(f'No comparison rule found for class {self.request.__cass__.__name__}')
+            raise AssertionError(f'No comparison rule found for class {self.request.__class__.__name__}')
         return self
 
 

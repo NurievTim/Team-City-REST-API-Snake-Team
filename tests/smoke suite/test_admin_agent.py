@@ -1,12 +1,9 @@
 import allure
 import pytest
 
-from dotenv import load_dotenv
 from src.requests.skeleton.requesters.agent_requester import AgentRequester
 from src.specs.request_spec import RequestSpecs
 from src.specs.response_spec import ResponseSpecs
-
-load_dotenv()
 
 
 @pytest.mark.smoke
