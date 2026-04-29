@@ -1,14 +1,10 @@
 import allure
 import pytest
-import uuid
 
-from dotenv import load_dotenv
-from src.requests.project_requester import ProjectRequester
+from src.models.comparison.model_assertions import ModelAssertions
+from src.requests.skeleton.requesters.project_requester import ProjectRequester
 from src.specs.request_spec import RequestSpecs
-from src.models.requests import CreateProjectRequest, ParentProject
 from src.specs.response_spec import ResponseSpecs
-
-load_dotenv()
 
 
 @pytest.mark.smoke
@@ -34,23 +30,11 @@ class TestProjects:
 
     @allure.id("6")
     @allure.title("POST /projects — создать проект, count вырос")
-    def test_create_project_increases_count(self):
-        requester = ProjectRequester(
-            RequestSpecs.admin_base_headers(),
-            ResponseSpecs.request_return_ok(),
-        )
-        count_before = requester.get_projects().count
+    def test_create_project_increases_count(self, get_project_requester, get_project_request, factory_created_project):
+        count_before = get_project_requester.get_projects().count
+        created = factory_created_project()
+        ModelAssertions(get_project_request, created).match()
+        count_after = get_project_requester.get_projects().count
 
-        uid = uuid.uuid4().hex[:8].upper()
-        project_request = CreateProjectRequest(
-            id=f'SmokeProject{uid}',
-            name=f'Smoke Test Project {uid}',
-            parentProject=ParentProject(locator='_Root'),
-        )
-        created = requester.create_project(project_request)
-        assert created.id == project_request.id
-
-        count_after = requester.get_projects().count
         assert count_after > count_before
-        requester.delete_project(project_request.id)
 
