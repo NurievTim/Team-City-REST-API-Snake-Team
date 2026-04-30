@@ -25,4 +25,13 @@ class TestProjectsConfig:
         response = project_not_found.get(locator=f"id:{get_project_request.id}")
         assert response.status_code == HTTPStatus.NOT_FOUND
 
+    @allure.id("27")
+    @allure.title("PUT /projects/{projectLocator}/archived — архивация проекта")
+    def test_archive_project(self, get_project_requester, created_project, project_archiver, extract_after_test):
+        project_id = created_project.id
+        project_archiver(project_id, True)
+        extract_after_test(project_id)
+
+        project_response = get_project_requester.get(locator=f"id:{project_id}")
+        assert project_response.json().get("archived") is True
 

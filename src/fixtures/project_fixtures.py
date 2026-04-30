@@ -1,4 +1,5 @@
 import pytest
+import requests
 
 from src.generators.random_data import RandomData
 from src.models.requests import CreateProjectRequest, ParentProject
@@ -42,6 +43,7 @@ def factory_created_project(get_project_requester, get_project_request):
         response = get_project_requester.create_project(get_project_request)
         created_ids.append(get_project_request.id)
         return response
+
     yield create
     for project_id in created_ids:
         get_project_requester.delete_project(project_id)
@@ -64,4 +66,32 @@ def project_not_found():
         endpoint=Endpoint.GET_PROJECTS,
         response_spec=ResponseSpecs.entity_was_not_found(),
     )
+
+
+@pytest.fixture
+def project_archiver(get_project_requester):
+    def _set_archived(project_id: str, archived: bool):
+        headers = dict(get_project_requester.headers)
+        headers["Content-Type"] = "text/plain"
+        headers["Accept"] = "text/plain"
+        response = requests.put(
+            url=f"{get_project_requester.base_url}projects/id:{project_id}/archived",
+            data=str(archived).lower(),
+            headers=headers,
+        )
+        ResponseSpecs.request_return_ok()(response)
+
+    return _set_archived
+
+
+@pytest.fixture
+def extract_after_test(project_archiver):
+    archived_projects = []
+
+    def _track(project_id: str):
+        archived_projects.append(project_id)
+    yield _track
+    for project_id in archived_projects:
+        project_archiver(project_id, False)
+
 
