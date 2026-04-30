@@ -3,9 +3,10 @@ from enum import Enum
 from typing import Optional
 
 from src.models.base_model import BaseModel
-from src.models.requests import (CreateProjectRequest, CreateBuildTypeRequest, QueueBuildRequest, CopyBuildTypeRequest)
+from src.models.requests import (CreateProjectRequest, CreateBuildTypeRequest, QueueBuildRequest,
+                                 CopyBuildTypeRequest, CreateVcsRootRequest,)
 from src.models.responses import (ServerInfoResponse, CurrentUserResponse, ProjectResponse, ProjectsListResponse,
-                                  BuildTypeResponse, QueueBuildResponse, AgentsListResponse)
+                                  BuildTypeResponse, QueueBuildResponse, AgentsListResponse, VcsRootResponse)
 
 
 @dataclass(frozen=True)
@@ -68,4 +69,10 @@ class Endpoint(Enum):
         url='projects',
         request_model=CopyBuildTypeRequest,
         response_model=BuildTypeResponse,
+    )
+
+    CREATE_VCS_ROOT = EndpointConfig(
+        url='vcs-roots',
+        request_model=CreateVcsRootRequest,
+        response_model=VcsRootResponse,
     )

@@ -40,3 +40,10 @@ class AgentsListResponse(BaseModel):
     count: int
     agent: Optional[list] = None
 
+
+class VcsRootResponse(BaseModel):
+    id: str
+    name: str
+    vcsName: Optional[str] = None
+    project: Optional[dict] = None
+
