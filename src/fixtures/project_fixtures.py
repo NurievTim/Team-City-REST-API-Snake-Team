@@ -51,7 +51,7 @@ def factory_created_project(get_project_requester, get_project_request):
 def tc20_project_request():
     uid = RandomData.get_name()
     return CreateProjectRequest(
-        id=f"AutoTest_TC20_{uid}",
+        id=f"AuTest_TC20_{uid}",
         name=f"AutoTest TC20 {uid}",
         parentProject=ParentProject(locator="id:_Root"),
     )
