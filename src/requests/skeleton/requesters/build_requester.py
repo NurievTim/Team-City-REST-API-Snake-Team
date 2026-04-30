@@ -1,4 +1,5 @@
-from src.models import requests
+import requests
+
 from src.models.requests import CreateBuildTypeRequest, QueueBuildRequest, CopyBuildTypeRequest
 from src.models.responses import BuildTypeResponse, QueueBuildResponse
 from src.requests.skeleton.endpoint import Endpoint
@@ -32,3 +33,63 @@ class BuildRequester(CrudRequester):
             suffix="buildTypes",
         )
         return BuildTypeResponse(**response.json())
+
+    def set_build_type_paused(self, build_type_id: str, paused: bool) -> None:
+        headers = dict(self.headers)
+        headers["Content-Type"] = "text/plain"
+        headers["Accept"] = "text/plain"
+        response = requests.put(
+            url=f"{self.base_url}{Endpoint.CREATE_BUILD_TYPE.value.url}/id:{build_type_id}/paused",
+            data=str(paused).lower(),
+            headers=headers,
+        )
+        self.response_spec(response)
+
+    def get_build_type_paused(self, build_type_id: str) -> bool:
+        headers = dict(self.headers)
+        headers["Accept"] = "text/plain"
+        response = requests.get(
+            url=f"{self.base_url}{Endpoint.CREATE_BUILD_TYPE.value.url}/id:{build_type_id}/paused",
+            headers=headers,
+        )
+        self.response_spec(response)
+        return response.text.strip().lower() == "true"
+
+    def create_build_type_parameter(self, build_type_id: str, name: str, value: str) -> None:
+        response = requests.post(
+            url=f"{self.base_url}{Endpoint.CREATE_BUILD_TYPE.value.url}/id:{build_type_id}/parameters",
+            json={"name": name, "value": value},
+            headers=self.headers,
+        )
+        self.response_spec(response)
+
+    def set_build_type_parameter(self, build_type_id: str, name: str, value: str) -> None:
+        headers = dict(self.headers)
+        headers["Content-Type"] = "text/plain"
+        headers["Accept"] = "text/plain"
+        response = requests.put(
+            url=f"{self.base_url}{Endpoint.CREATE_BUILD_TYPE.value.url}/id:{build_type_id}/parameters/{name}",
+            data=value,
+            headers=headers,
+        )
+        self.response_spec(response)
+
+    def get_build_type_parameter(self, build_type_id: str, name: str) -> dict:
+        response = requests.get(
+            url=f"{self.base_url}{Endpoint.CREATE_BUILD_TYPE.value.url}/id:{build_type_id}/parameters/{name}",
+            headers=self.headers,
+        )
+        self.response_spec(response)
+        return response.json()
+
+    def delete_build_type_parameter(self, build_type_id: str, name: str) -> None:
+        previous_spec = self.response_spec
+        try:
+            self.response_spec = ResponseSpecs.entity_was_deleted()
+            response = requests.delete(
+                url=f"{self.base_url}{Endpoint.CREATE_BUILD_TYPE.value.url}/id:{build_type_id}/parameters/{name}",
+                headers=self.headers,
+            )
+            self.response_spec(response)
+        finally:
+            self.response_spec = previous_spec

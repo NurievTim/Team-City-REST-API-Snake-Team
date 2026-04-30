@@ -1,5 +1,4 @@
 import random
-import os
 import uuid
 from faker import Faker
 
@@ -8,14 +7,14 @@ faker = Faker()
 
 class RandomData:
     @staticmethod
-    def get_username() -> str:
+    def get_name() -> str:
         # UUID гарантирует уникальность даже при параллельных запусках
         unique_id = str(uuid.uuid4())[:8]  # Первые 8 символов UUID
         base_name = ''.join(faker.random_letters(length=random.randint(3, 6)))
         return f"{base_name}{unique_id}"  # Например: aBcXyz12a4f5
 
     @staticmethod
-    def get_deposit_amount(min_value: float = 1.0, max_value: float = 100000.0) -> float:
+    def get_float_num(min_value: float = 1.0, max_value: float = 100000.0) -> float:
         return random.uniform(min_value, max_value)
 
     @staticmethod

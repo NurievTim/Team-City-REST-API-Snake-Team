@@ -10,9 +10,9 @@ class TestProjectsConfig:
     @allure.title("POST /projects — создать проект с заданными атрибутами")
     def test_create_project_with_expected_attributes(self, get_project_requester, tc20_project_request):
         created = get_project_requester.create_project(tc20_project_request)
-
         assert created.id == tc20_project_request.id
         assert created.name == tc20_project_request.name
+
         get_project_requester.delete_project(tc20_project_request.id)
 
     @allure.id("21")

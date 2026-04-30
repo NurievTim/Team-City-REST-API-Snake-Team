@@ -28,10 +28,10 @@ def build_type_request(created_project):
 
 @pytest.fixture
 def copy_build_request():
-    suffix = RandomData.get_username()
+    uid = RandomData.get_name()
     return CopyBuildTypeRequest(
-        sourceBuildTypeLocator="id:{suffix}",
-        name=f"Copy {suffix}",
-        id=f"Test_Copy_{suffix}",
+        sourceBuildTypeLocator="id:{uid}",
+        name=f"Copy {uid}",
+        id=f"Test_Copy_{uid}",
         copyAllAssociatedSettings=True,
     )

@@ -19,7 +19,7 @@ def get_project_requester():
 
 @pytest.fixture()
 def get_project_request():
-    uid = RandomData.get_username()
+    uid = RandomData.get_name()
     return CreateProjectRequest(
         id=f'SmokePr_{uid}',
         name=f'Smoke Pr {uid}',
@@ -49,7 +49,7 @@ def factory_created_project(get_project_requester, get_project_request):
 
 @pytest.fixture()
 def tc20_project_request():
-    uid = RandomData.get_username()
+    uid = RandomData.get_name()
     return CreateProjectRequest(
         id=f"AutoTest_TC20_{uid}",
         name=f"AutoTest TC20 {uid}",
