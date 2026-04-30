@@ -1,8 +1,8 @@
 from typing import Annotated
 
-from generators.generating_rule import GeneratingRule
-from models.base_model import BaseModel
-from models.requests import ParentProject
+from src.generators.generating_rule import GeneratingRule
+from src.models.base_model import BaseModel
+from src.models.requests import ParentProject
 
 
 class CreateProjectRequest(BaseModel):

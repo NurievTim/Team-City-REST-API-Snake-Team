@@ -28,3 +28,10 @@ class BuildTypeRef(BaseModel):
 class QueueBuildRequest(BaseModel):
     buildType: BuildTypeRef
 
+
+class CopyBuildTypeRequest(BaseModel):
+    sourceBuildTypeLocator: str
+    name: str
+    id: str
+    copyAllAssociatedSettings: bool = True
+

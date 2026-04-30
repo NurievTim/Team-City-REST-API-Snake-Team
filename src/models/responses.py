@@ -27,6 +27,7 @@ class ProjectsListResponse(BaseModel):
 class BuildTypeResponse(BaseModel):
     id: str
     name: str
+    project: Optional[dict] = None
 
 
 class QueueBuildResponse(BaseModel):
