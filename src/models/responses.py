@@ -27,6 +27,7 @@ class ProjectsListResponse(BaseModel):
 class BuildTypeResponse(BaseModel):
     id: str
     name: str
+    project: Optional[dict] = None
 
 
 class QueueBuildResponse(BaseModel):
@@ -38,4 +39,11 @@ class QueueBuildResponse(BaseModel):
 class AgentsListResponse(BaseModel):
     count: int
     agent: Optional[list] = None
+
+
+class VcsRootResponse(BaseModel):
+    id: str
+    name: str
+    vcsName: Optional[str] = None
+    project: Optional[dict] = None
 

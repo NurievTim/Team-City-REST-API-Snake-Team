@@ -28,3 +28,31 @@ class BuildTypeRef(BaseModel):
 class QueueBuildRequest(BaseModel):
     buildType: BuildTypeRef
 
+
+class CopyBuildTypeRequest(BaseModel):
+    sourceBuildTypeLocator: str
+    name: str
+    id: str
+    copyAllAssociatedSettings: bool = True
+
+
+class VcsRootProjectRef(BaseModel):
+    id: str
+
+
+class VcsRootProperty(BaseModel):
+    name: str
+    value: str
+
+
+class VcsRootProperties(BaseModel):
+    property: list[VcsRootProperty]
+
+
+class CreateVcsRootRequest(BaseModel):
+    id: str
+    name: str
+    vcsName: str
+    project: VcsRootProjectRef
+    properties: VcsRootProperties
+

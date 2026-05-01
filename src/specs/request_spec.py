@@ -1,5 +1,4 @@
 import os
-from src.configs.config import Config
 from dotenv import load_dotenv
 load_dotenv()
 
