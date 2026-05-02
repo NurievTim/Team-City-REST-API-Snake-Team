@@ -21,7 +21,7 @@ class TestBuilds:
     def test_queue_build_state_is_queued(self, build_type_request, queue_build_request):
         build_steps = BuildQueueSteps()
         build_steps.create_build_type(build_type_request)
-        queued_build = build_steps.queue_build(queue_build_request)
+        queued_build = build_steps.add_build_to_queue(queue_build_request)
         fetched_build = build_steps.get_queued_build_by_id(queued_build.id)
 
         assert fetched_build.state == 'queued'

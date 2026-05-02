@@ -1,5 +1,5 @@
 from src.models.comparison.model_assertions import ModelAssertions
-from src.models.requests import QueueBuildRequest, BuildCancelRequest, CreateBuildTypeRequest
+from src.models.requests import QueueBuildRequest, CreateBuildTypeRequest
 from src.models.responses import QueueBuildResponse, BuildTypeResponse
 from src.requests.skeleton.endpoint import Endpoint
 from src.requests.skeleton.requesters.validated_crud_requester import ValidatedCrudRequester
@@ -14,7 +14,7 @@ class BuildQueueSteps(BaseSteps):
         build_type: BuildTypeResponse = ValidatedCrudRequester(
             RequestSpecs.admin_base_headers(),
             Endpoint.CREATE_BUILD_TYPE,
-            ResponseSpecs.entity_was_created(),
+            ResponseSpecs.request_return_ok(),
         ).post(create_build_type_request)
 
         ModelAssertions(create_build_type_request, build_type).match()
@@ -38,7 +38,7 @@ class BuildQueueSteps(BaseSteps):
         ).post(queue_build_request)
         ModelAssertions(queue_build_request, add_build_to_queue_response).match()
 
-        assert add_build_to_queue_response.state == 'Queued'
+        assert add_build_to_queue_response.state == 'queued'
         return add_build_to_queue_response
 
     def get_queued_build_by_id(self, build_id: int) -> QueueBuildResponse:

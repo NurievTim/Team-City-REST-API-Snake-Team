@@ -2,6 +2,7 @@ import os
 
 from src.models.responses import ServerInfoResponse, CurrentUserResponse
 from src.requests.skeleton.endpoint import Endpoint
+from src.requests.skeleton.requesters.crud_requester import CrudRequester
 from src.requests.skeleton.requesters.validated_crud_requester import ValidatedCrudRequester
 from src.specs.request_spec import RequestSpecs
 from src.specs.response_spec import ResponseSpecs
@@ -29,8 +30,8 @@ class ServerSteps:
         return user
 
     def get_current_user_unauthorized(self):
-        ValidatedCrudRequester(
-            RequestSpecs.unauth_spec(),
-            Endpoint.GET_CURRENT_USER,
-            ResponseSpecs.request_return_unauth(),
+        CrudRequester(
+            request_spec=RequestSpecs.unauth_spec(),
+            endpoint=Endpoint.GET_CURRENT_USER,
+            response_spec=ResponseSpecs.request_return_unauth(),
         ).get()

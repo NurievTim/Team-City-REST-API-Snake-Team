@@ -27,10 +27,16 @@ class Endpoint(Enum):
         response_model=CurrentUserResponse,
     )
 
-    GET_PROJECT = EndpointConfig(
+    GET_PROJECTS = EndpointConfig(
         url='projects',
         request_model=None,
         response_model=ProjectsListResponse,
+    )
+
+    GET_PROJECT = EndpointConfig(
+        url='projects',
+        request_model=None,
+        response_model=ProjectResponse,
     )
 
     CREATE_PROJECT = EndpointConfig(

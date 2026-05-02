@@ -2,6 +2,7 @@ from src.models.comparison.model_assertions import ModelAssertions
 from src.models.requests import CreateProjectRequest
 from src.models.responses import ProjectsListResponse, ProjectResponse
 from src.requests.skeleton.endpoint import Endpoint
+from src.requests.skeleton.requesters.crud_requester import CrudRequester
 from src.requests.skeleton.requesters.validated_crud_requester import ValidatedCrudRequester
 from src.specs.request_spec import RequestSpecs
 from src.specs.response_spec import ResponseSpecs
@@ -11,7 +12,7 @@ class ProjectSteps:
     def get_projects(self) -> ProjectsListResponse:
         projects: ProjectsListResponse = ValidatedCrudRequester(
             RequestSpecs.admin_base_headers(),
-            Endpoint.GET_PROJECT,
+            Endpoint.GET_PROJECTS,
             ResponseSpecs.request_return_ok(),
         ).get()
 
@@ -19,10 +20,10 @@ class ProjectSteps:
         return projects
 
     def get_projects_unauthorized(self):
-        ValidatedCrudRequester(
-            RequestSpecs.unauth_spec(),
-            Endpoint.GET_PROJECT,
-            ResponseSpecs.request_return_unauth(),
+        CrudRequester(
+            request_spec=RequestSpecs.unauth_spec(),
+            endpoint=Endpoint.GET_PROJECTS,
+            response_spec=ResponseSpecs.request_return_unauth(),
         ).get()
 
     def get_project_by_id(self, project_id: str) -> ProjectResponse:
@@ -39,7 +40,7 @@ class ProjectSteps:
         project: ProjectResponse = ValidatedCrudRequester(
             RequestSpecs.admin_base_headers(),
             Endpoint.CREATE_PROJECT,
-            ResponseSpecs.entity_was_created(),
+            ResponseSpecs.request_return_ok(),
         ).post(create_project_request)
 
         ModelAssertions(create_project_request, project).match()

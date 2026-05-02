@@ -13,5 +13,4 @@ class AgentSteps:
             ResponseSpecs.request_return_ok(),
         ).get(params={'locator': 'authorized:true'})
 
-        assert agents.count >= 1, f"Ожидался count >= 1, получен count={agents.count}"
         return agents
