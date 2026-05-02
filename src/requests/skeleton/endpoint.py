@@ -27,7 +27,7 @@ class Endpoint(Enum):
         response_model=CurrentUserResponse,
     )
 
-    GET_PROJECTS = EndpointConfig(
+    GET_PROJECT = EndpointConfig(
         url='projects',
         request_model=None,
         response_model=ProjectsListResponse,
@@ -51,13 +51,25 @@ class Endpoint(Enum):
         response_model=BuildTypeResponse,
     )
 
+    GET_BUILD_TYPE = EndpointConfig(
+        url='buildTypes',
+        request_model=None,
+        response_model=BuildTypeResponse,
+    )
+
     QUEUE_BUILD = EndpointConfig(
         url='buildQueue',
         request_model=QueueBuildRequest,
         response_model=QueueBuildResponse,
     )
 
-    GET_AGENTS = EndpointConfig(
+    GET_QUEUED_BUILD = EndpointConfig(
+        url='buildQueue',
+        request_model=None,
+        response_model=QueueBuildResponse,
+    )
+
+    GET_AGENT = EndpointConfig(
         url='agents',
         request_model=None,
         response_model=AgentsListResponse,

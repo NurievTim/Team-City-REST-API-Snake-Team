@@ -24,13 +24,9 @@ class ValidatedCrudRequester(HttpRequest):
         response = self.crud_requester.post(model, locator)
         return self._adapter.validate_python(response.json())
 
-    def get(self, id: int):
-        response = self.crud_requester.get(id)
+    def get(self, locator: Optional[str] = None, params: Optional[dict] = None):
+        response = self.crud_requester.get(locator=locator, params=params)
         return self._adapter.validate_python(response.json())
 
-    def get_all(self) -> requests.Response:
-        response = self.crud_requester.get_all()
-        return response
-
-    def update(self, id: int): ...
-    def delete(self, id: int): ...
+    def delete(self, locator: str):
+        self.crud_requester.delete(locator)
