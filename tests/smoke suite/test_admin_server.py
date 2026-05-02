@@ -2,7 +2,6 @@ import os
 import allure
 import pytest
 
-from src.requests.skeleton.requesters.server_requester import ServerRequester
 from src.specs.request_spec import RequestSpecs
 from src.specs.response_spec import ResponseSpecs
 

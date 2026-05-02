@@ -33,4 +33,3 @@ def vcs_root_request(created_project):
             ]
         ),
     )
-

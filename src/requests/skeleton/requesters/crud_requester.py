@@ -13,14 +13,9 @@ class CrudRequester(HttpRequest, CrudEndpointInterface):
     def base_url(self) -> str:
         return f"{Config.get('baseurl')}"
 
-    def post(self, model: BaseModel, endpoint: Endpoint = None, locator: str = None,
-             suffix: str = None, ) -> requests.Response:
+    def post(self, model: BaseModel, endpoint: Endpoint = None) -> requests.Response:
         ep = endpoint or self.endpoint
-        url = f"{self.base_url}{ep.value.url}"
-        if locator:
-            url = f"{url}/{locator}"
-        if suffix:
-            url = f"{url}/{suffix}"
+        url = f'{self.base_url}{ep.value.url}'
         response = requests.post(url=url, json=model.model_dump(), headers=self.headers)
         self.response_spec(response)
         return response

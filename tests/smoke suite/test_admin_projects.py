@@ -2,7 +2,6 @@ import allure
 import pytest
 
 from src.models.comparison.model_assertions import ModelAssertions
-from src.requests.skeleton.requesters.project_requester import ProjectRequester
 from src.specs.request_spec import RequestSpecs
 from src.specs.response_spec import ResponseSpecs
 
