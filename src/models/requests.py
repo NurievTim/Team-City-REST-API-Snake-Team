@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from src.models.base_model import BaseModel
 
 
 class ParentProject(BaseModel):
@@ -55,4 +55,9 @@ class CreateVcsRootRequest(BaseModel):
     vcsName: str
     project: VcsRootProjectRef
     properties: VcsRootProperties
+
+
+class BuildCancelRequest(BaseModel):
+    comment: str
+    readdIntoQueue: bool
 
