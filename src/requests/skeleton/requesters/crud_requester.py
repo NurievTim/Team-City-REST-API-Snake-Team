@@ -1,3 +1,5 @@
+from typing import TypeVar, Optional
+
 import requests
 
 from src.configs.config import Config
@@ -6,6 +8,7 @@ from src.requests.skeleton.endpoint import Endpoint
 from src.requests.skeleton.http_request import HttpRequest
 from src.requests.skeleton.interfaces.crud_end_interface import CrudEndpointInterface
 
+T = TypeVar('T', bound=BaseModel)
 
 class CrudRequester(HttpRequest, CrudEndpointInterface):
 
@@ -13,7 +16,7 @@ class CrudRequester(HttpRequest, CrudEndpointInterface):
     def base_url(self) -> str:
         return f"{Config.get('baseurl')}"
 
-    def post(self, model: BaseModel, endpoint: Endpoint = None, locator: str = None,
+    def post(self, model: Optional[T], endpoint: Endpoint = None, locator: str = None,
              suffix: str = None, ) -> requests.Response:
         ep = endpoint or self.endpoint
         url = f"{self.base_url}{ep.value.url}"

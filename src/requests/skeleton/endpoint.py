@@ -4,7 +4,7 @@ from typing import Optional
 
 from src.models.base_model import BaseModel
 from src.models.requests import (CreateProjectRequest, CreateBuildTypeRequest, QueueBuildRequest,
-                                 CopyBuildTypeRequest, CreateVcsRootRequest,)
+                                 CopyBuildTypeRequest, CreateVcsRootRequest, BuildCancelRequest, )
 from src.models.responses import (ServerInfoResponse, CurrentUserResponse, ProjectResponse, ProjectsListResponse,
                                   BuildTypeResponse, QueueBuildResponse, AgentsListResponse, VcsRootResponse)
 
@@ -75,4 +75,10 @@ class Endpoint(Enum):
         url='vcs-roots',
         request_model=CreateVcsRootRequest,
         response_model=VcsRootResponse,
+    )
+
+    CANCEL_QUEUED_BUILD = EndpointConfig(
+        url=f'buildQueue',
+        request_model=BuildCancelRequest,
+        response_model=QueueBuildResponse,
     )
