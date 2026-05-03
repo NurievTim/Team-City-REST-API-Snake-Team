@@ -17,6 +17,7 @@ class CurrentUserResponse(BaseModel):
 class ProjectResponse(BaseModel):
     id: str
     name: str
+    archived: Optional[bool] = None
 
 
 class ProjectsListResponse(BaseModel):
@@ -46,4 +47,3 @@ class VcsRootResponse(BaseModel):
     name: str
     vcsName: Optional[str] = None
     project: Optional[dict] = None
-
