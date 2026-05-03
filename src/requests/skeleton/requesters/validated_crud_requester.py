@@ -1,4 +1,4 @@
-from typing import TypeVar, Optional
+from typing import TypeVar, Optional, Union
 
 from pydantic import TypeAdapter
 
@@ -23,6 +23,9 @@ class ValidatedCrudRequester(HttpRequest):
     def get(self, locator: Optional[str] = None):
         response = self.crud_requester.get(locator=locator)
         return self._adapter.validate_python(response.json())
+
+    def put(self, locator: str, body: Union[T, str]) -> None:
+        self.crud_requester.put(locator=locator, body=body)
 
     def delete(self, locator: str) -> None:
         self.crud_requester.delete(locator=locator)
