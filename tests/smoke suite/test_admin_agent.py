@@ -13,3 +13,4 @@ class TestAgents:
         get_agent = AgentSteps().get_authorized_agents()
 
         assert get_agent.count >= 1
+

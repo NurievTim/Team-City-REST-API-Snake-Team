@@ -28,3 +28,4 @@ class TestProjects:
         project_steps.get_project_by_id(created_project.id)
         count_after = project_steps.get_projects().count
         assert count_after > count_before
+

@@ -25,3 +25,4 @@ class TestBuilds:
         fetched_build = build_steps.get_queued_build_by_id(queued_build.id)
 
         assert fetched_build.state == 'queued'
+

@@ -27,3 +27,4 @@ class TestServer:
     @allure.title("GET /users/current — HTTP 401, отсутсвтует или не верный токен")
     def test_get_current_user_unauthorized(self):
         ServerSteps().get_current_user_unauthorized()
+
