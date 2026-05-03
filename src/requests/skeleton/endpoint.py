@@ -3,8 +3,10 @@ from enum import Enum
 from typing import Optional
 
 from src.models.base_model import BaseModel
-from src.models.requests import (CreateProjectRequest, CreateBuildTypeRequest, QueueBuildRequest)
-from src.models.responses import (ServerInfoResponse, CurrentUserResponse, ProjectResponse, ProjectsListResponse, BuildTypeResponse, QueueBuildResponse, AgentsListResponse)
+from src.models.requests import (CreateProjectRequest, CreateBuildTypeRequest, QueueBuildRequest, CopyBuildTypeRequest,
+                                 CreateVcsRootRequest, BuildCancelRequest)
+from src.models.responses import (ServerInfoResponse, CurrentUserResponse, ProjectResponse, ProjectsListResponse,
+                                  BuildTypeResponse, QueueBuildResponse, AgentsListResponse, VcsRootResponse)
 
 
 @dataclass(frozen=True)
@@ -79,4 +81,22 @@ class Endpoint(Enum):
         url='agents',
         request_model=None,
         response_model=AgentsListResponse,
+    )
+
+    COPY_BUILD_TYPE_TO_PROJECT = EndpointConfig(
+        url='projects',
+        request_model=CopyBuildTypeRequest,
+        response_model=BuildTypeResponse,
+    )
+
+    CREATE_VCS_ROOT = EndpointConfig(
+        url='vcs-roots',
+        request_model=CreateVcsRootRequest,
+        response_model=VcsRootResponse,
+    )
+
+    CANCEL_QUEUED_BUILD = EndpointConfig(
+        url=f'buildQueue',
+        request_model=BuildCancelRequest,
+        response_model=QueueBuildResponse,
     )
