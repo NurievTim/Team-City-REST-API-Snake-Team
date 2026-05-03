@@ -3,10 +3,8 @@ from enum import Enum
 from typing import Optional
 
 from src.models.base_model import BaseModel
-from src.models.requests import (CreateProjectRequest, CreateBuildTypeRequest, QueueBuildRequest,
-                                 CopyBuildTypeRequest, CreateVcsRootRequest, BuildCancelRequest, )
-from src.models.responses import (ServerInfoResponse, CurrentUserResponse, ProjectResponse, ProjectsListResponse,
-                                  BuildTypeResponse, QueueBuildResponse, AgentsListResponse, VcsRootResponse)
+from src.models.requests import (CreateProjectRequest, CreateBuildTypeRequest, QueueBuildRequest)
+from src.models.responses import (ServerInfoResponse, CurrentUserResponse, ProjectResponse, ProjectsListResponse, BuildTypeResponse, QueueBuildResponse, AgentsListResponse)
 
 
 @dataclass(frozen=True)
@@ -35,6 +33,12 @@ class Endpoint(Enum):
         response_model=ProjectsListResponse,
     )
 
+    GET_PROJECT = EndpointConfig(
+        url='projects',
+        request_model=None,
+        response_model=ProjectResponse,
+    )
+
     CREATE_PROJECT = EndpointConfig(
         url='projects',
         request_model=CreateProjectRequest,
@@ -53,32 +57,26 @@ class Endpoint(Enum):
         response_model=BuildTypeResponse,
     )
 
+    GET_BUILD_TYPE = EndpointConfig(
+        url='buildTypes',
+        request_model=None,
+        response_model=BuildTypeResponse,
+    )
+
     QUEUE_BUILD = EndpointConfig(
         url='buildQueue',
         request_model=QueueBuildRequest,
         response_model=QueueBuildResponse,
     )
 
-    GET_AGENTS = EndpointConfig(
+    GET_QUEUED_BUILD = EndpointConfig(
+        url='buildQueue',
+        request_model=None,
+        response_model=QueueBuildResponse,
+    )
+
+    GET_AGENT = EndpointConfig(
         url='agents',
         request_model=None,
         response_model=AgentsListResponse,
-    )
-
-    COPY_BUILD_TYPE_TO_PROJECT = EndpointConfig(
-        url='projects',
-        request_model=CopyBuildTypeRequest,
-        response_model=BuildTypeResponse,
-    )
-
-    CREATE_VCS_ROOT = EndpointConfig(
-        url='vcs-roots',
-        request_model=CreateVcsRootRequest,
-        response_model=VcsRootResponse,
-    )
-
-    CANCEL_QUEUED_BUILD = EndpointConfig(
-        url=f'buildQueue',
-        request_model=BuildCancelRequest,
-        response_model=QueueBuildResponse,
     )

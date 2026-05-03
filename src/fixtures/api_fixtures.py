@@ -1,6 +1,6 @@
 import pytest
 
-from classes.api_manager import ApiManager
+from src.classes.api_manager import ApiManager
 
 
 @pytest.fixture
