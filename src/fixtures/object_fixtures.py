@@ -21,7 +21,3 @@ def cleanup_objects(objects: List[Any]):
             api_manager.project_steps.delete_project(obj.id)
         else:
             logging.warning(f'Object type: {type(obj)} is not deleted')
-        if isinstance(obj, BuildTypeResponse):
-            api_manager.build_steps.delete_build_type(obj.name)
-        else:
-            logging.warning(f'Object type: {type(obj)} is not deleted')

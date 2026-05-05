@@ -22,14 +22,6 @@ class BuildSteps(BaseSteps):
         # ModelAssertions(create_build_type_request, build_type).match()
         return build_type
 
-    def delete_build_type(self, build_type_id: str) -> None:
-        ValidatedCrudRequester(
-            RequestSpecs.admin_base_headers(),
-            Endpoint.DELETE_BUILD_TYPE,
-            ResponseSpecs.entity_was_deleted(),
-        ).delete(locator=f'name:{build_type_id}')
-        # не понятно где делать get
-
     def get_build_type_by_id(self, build_type_id: str) -> BuildTypeResponse:
         build_type: BuildTypeResponse = ValidatedCrudRequester(
             RequestSpecs.admin_base_headers(),
@@ -39,13 +31,6 @@ class BuildSteps(BaseSteps):
 
         assert build_type.id == build_type_id
         return build_type
-
-    def delete_build_type(self, build_type_id: str) -> None:
-        ValidatedCrudRequester(
-            RequestSpecs.admin_base_headers(),
-            Endpoint.CREATE_BUILD_TYPE,
-            ResponseSpecs.entity_was_deleted(),
-        ).delete(locator=f'id:{build_type_id}')
 
     def get_build_type_paused(self, build_type_id: str) -> bool:
         response = ValidatedCrudRequester(
