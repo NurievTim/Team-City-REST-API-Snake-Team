@@ -6,9 +6,10 @@ from src.requests.skeleton.requesters.crud_requester import CrudRequester
 from src.requests.skeleton.requesters.validated_crud_requester import ValidatedCrudRequester
 from src.specs.request_spec import RequestSpecs
 from src.specs.response_spec import ResponseSpecs
+from src.steps.base_steps import BaseSteps
 
 
-class ProjectSteps:
+class ProjectSteps(BaseSteps):
     def get_projects(self) -> ProjectsListResponse:
         projects: ProjectsListResponse = ValidatedCrudRequester(
             RequestSpecs.admin_base_headers(),
@@ -42,6 +43,7 @@ class ProjectSteps:
             Endpoint.CREATE_PROJECT,
             ResponseSpecs.request_return_ok(),
         ).post(create_project_request)
+        self.created_objects.append(project)
 
         ModelAssertions(create_project_request, project).match()
         return project

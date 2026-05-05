@@ -1,3 +1,4 @@
+import inspect
 from datetime import datetime, timedelta
 import uuid
 import rstr
@@ -5,11 +6,11 @@ import random
 from typing import Any, Annotated, get_type_hints, get_origin, get_args
 from src.generators.random_data import RandomData
 from src.generators.generating_rule import GeneratingRule
+from src.models.base_model import BaseModel
 
 
 class RandomModelGenerator:
     _FIELD_GENERATORS = {
-        'username': RandomData.get_username,
         'password': RandomData.get_password,
     }
 
@@ -29,6 +30,14 @@ class RandomModelGenerator:
                 for ann in annotations:
                     if isinstance(ann, GeneratingRule):
                         rule = ann
+            if rule and rule.skip:
+                default = inspect.signature(cls).parameters.get(field_name)
+                init_data[field_name] = (
+                    default.default
+                    if default and default.default is not inspect.Parameter.empty
+                    else None
+                )
+                continue
             if rule:
                 value = RandomModelGenerator._generate_from_regex(rule.regex, actual_type)
             else:
@@ -50,6 +59,11 @@ class RandomModelGenerator:
 
     @staticmethod
     def _generate_value(field_type: type) -> Any:
+        try:
+            if isinstance(field_type, type) and issubclass(field_type, BaseModel):
+                return RandomModelGenerator.generate(field_type)
+        except TypeError:
+            pass
         if field_type is str:
             return str(uuid.uuid4())[:8]
         elif field_type is int:
