@@ -15,9 +15,11 @@ def build_type_request(created_project) -> CreateBuildTypeRequest:
     )
 # наверное надо через генератор создавать данные
 
+
 @pytest.fixture()
 def build_type(build_type_request, api_manager) -> BuildTypeResponse:
     return api_manager.build_steps.create_build_type(build_type_request)
+
 
 @pytest.fixture()
 def queue_build_request(build_type) -> QueueBuildRequest:

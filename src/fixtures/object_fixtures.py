@@ -3,7 +3,7 @@ from typing import Any, List
 import pytest
 
 from src.classes.api_manager import ApiManager
-from src.models.responses import ProjectResponse
+from src.models.responses import ProjectResponse, BuildTypeResponse
 
 
 @pytest.fixture
@@ -19,5 +19,9 @@ def cleanup_objects(objects: List[Any]):
     for obj in objects:
         if isinstance(obj, ProjectResponse):
             api_manager.project_steps.delete_project(obj.id)
+        else:
+            logging.warning(f'Object type: {type(obj)} is not deleted')
+        if isinstance(obj, BuildTypeResponse):
+            api_manager.build_steps.delete_build_type(obj.name)
         else:
             logging.warning(f'Object type: {type(obj)} is not deleted')

@@ -1,5 +1,4 @@
 from src.enums import BuildState
-from src.models.comparison.model_assertions import ModelAssertions
 from src.models.requests import QueueBuildRequest, BuildCancelRequest, CreateBuildTypeRequest
 from src.models.responses import QueueBuildResponse, BuildTypeResponse
 from src.requests.skeleton.endpoint import Endpoint
@@ -17,9 +16,17 @@ class BuildSteps(BaseSteps):
             Endpoint.CREATE_BUILD_TYPE,
             ResponseSpecs.request_return_ok(),
         ).post(create_build_type_request)
-
+        self.created_objects.append(build_type)
         # ModelAssertions(create_build_type_request, build_type).match()
         return build_type
+
+    def delete_build_type(self, build_type_id: str) -> None:
+        ValidatedCrudRequester(
+            RequestSpecs.admin_base_headers(),
+            Endpoint.DELETE_BUILD_TYPE,
+            ResponseSpecs.entity_was_deleted(),
+        ).delete(locator=f'name:{build_type_id}')
+        # не понятно где делать get
 
     def get_build_type_by_id(self, build_type_id: str) -> BuildTypeResponse:
         build_type: BuildTypeResponse = ValidatedCrudRequester(
