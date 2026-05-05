@@ -59,6 +59,12 @@ class Endpoint(Enum):
         response_model=BuildTypeResponse,
     )
 
+    DELETE_BUILD_TYPE = EndpointConfig(
+        url='buildTypes',
+        request_model=None,
+        response_model=None,
+    )
+
     GET_BUILD_TYPE = EndpointConfig(
         url='buildTypes',
         request_model=None,

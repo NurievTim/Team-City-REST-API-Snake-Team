@@ -3,6 +3,6 @@ from dataclasses import dataclass
 
 @dataclass
 class GeneratingRule:
-    regex: str
-
+    regex: str = None
+    skip: bool = False
 

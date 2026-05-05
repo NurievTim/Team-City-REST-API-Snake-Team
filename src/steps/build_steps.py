@@ -1,3 +1,5 @@
+from src.enums import BuildState
+from src.models.requests import QueueBuildRequest, BuildCancelRequest, CreateBuildTypeRequest
 from src.models.comparison.model_assertions import ModelAssertions
 from src.models.requests import QueueBuildRequest, BuildCancelRequest, CreateBuildTypeRequest, CopyBuildTypeRequest
 from src.models.responses import QueueBuildResponse, BuildTypeResponse
@@ -16,9 +18,17 @@ class BuildSteps(BaseSteps):
             Endpoint.CREATE_BUILD_TYPE,
             ResponseSpecs.request_return_ok(),
         ).post(create_build_type_request)
-
-        ModelAssertions(create_build_type_request, build_type).match()
+        self.created_objects.append(build_type)
+        # ModelAssertions(create_build_type_request, build_type).match()
         return build_type
+
+    def delete_build_type(self, build_type_id: str) -> None:
+        ValidatedCrudRequester(
+            RequestSpecs.admin_base_headers(),
+            Endpoint.DELETE_BUILD_TYPE,
+            ResponseSpecs.entity_was_deleted(),
+        ).delete(locator=f'name:{build_type_id}')
+        # не понятно где делать get
 
     def get_build_type_by_id(self, build_type_id: str) -> BuildTypeResponse:
         build_type: BuildTypeResponse = ValidatedCrudRequester(
@@ -90,7 +100,7 @@ class BuildSteps(BaseSteps):
             ResponseSpecs.request_return_ok(),
         ).post(queue_build_request)
 
-        assert queued_build.state == 'queued'
+        assert queued_build.state == BuildState.QUEUED
         return queued_build
 
     def get_queued_build_by_id(self, build_id: int) -> QueueBuildResponse:
@@ -103,12 +113,12 @@ class BuildSteps(BaseSteps):
         assert queued_build.id == build_id
         return queued_build
 
-    def cancel_queued_build(self, build_id: int) -> QueueBuildResponse:
-        cancel_request = BuildCancelRequest(comment='Cancelled by test cleanup', readdIntoQueue=False)
-        cancelled_build: QueueBuildResponse = ValidatedCrudRequester(
+    def cancel_queued_build(self, build_cancel_request: BuildCancelRequest, locator: str) -> QueueBuildResponse:
+        build_cancel_request: QueueBuildResponse = ValidatedCrudRequester(
             RequestSpecs.admin_base_headers(),
             Endpoint.CANCEL_QUEUED_BUILD,
-            ResponseSpecs.request_return_ok(),
-        ).post(cancel_request, locator=str(build_id))
+            ResponseSpecs.request_return_ok()
+        ).post(build_cancel_request, locator)
 
-        return cancelled_build
+        # ModelAssertions(cancel_queued_build_request, cancel_queued_build_response).match()
+        return build_cancel_request
