@@ -34,7 +34,7 @@ class QueueBuildResponse(BaseModel):
     id: int
     state: str
     buildType: Optional[dict] = None
-    status: str
+    status: Optional[str] = None
 
 
 class AgentsListResponse(BaseModel):
