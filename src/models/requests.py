@@ -1,3 +1,8 @@
+from typing import Annotated
+
+from pydantic import Field
+
+from src.generators.generating_rule import GeneratingRule
 from src.models.base_model import BaseModel
 
 
@@ -16,9 +21,9 @@ class ProjectRef(BaseModel):
 
 
 class CreateBuildTypeRequest(BaseModel):
-    id: str
-    name: str
-    project: ProjectRef
+    id: Annotated[str, GeneratingRule(regex=r"^BuildTypeId_[a-z0-9]{4}$")]
+    name: Annotated[str, GeneratingRule(regex=r"^BuildTypeName_[a-z0-9]{4}$")]
+    project: ProjectRef = Field(default=None)
 
 
 class BuildTypeRef(BaseModel):

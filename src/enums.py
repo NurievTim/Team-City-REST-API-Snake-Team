@@ -11,6 +11,7 @@ class BuildState(StrEnum):
 
 class Comment(StrEnum):
     CANCELING_QUEUED_BUILD = 'Canceling a queued build'
+    CANCELING_RUNNING_BUILD = 'Canceling a running build'
 
 
 class BuildStatus(StrEnum):

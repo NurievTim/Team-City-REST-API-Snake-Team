@@ -30,17 +30,28 @@ class BuildTypeResponse(BaseModel):
     name: str
     project: Optional[dict] = None
 
+class Comment(BaseModel):
+    text: str
 
 class QueueBuildResponse(BaseModel):
     id: int
     state: str
     buildType: Optional[dict] = None
     status: Optional[str] = None
+    comment : Optional[Comment] = None
+
+
+class AgentResponse(BaseModel):
+    id: int
+    name: str
+    connected: Optional[bool] = None
+    enabled: Optional[bool] = None
+    authorized: Optional[bool] = None
 
 
 class AgentsListResponse(BaseModel):
     count: int
-    agent: Optional[list] = None
+    agent: list[AgentResponse]
 
 
 class VcsRootResponse(BaseModel):
