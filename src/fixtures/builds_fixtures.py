@@ -45,8 +45,13 @@ def queue_build(queue_build_request, api_manager) -> QueueBuildResponse:
 
 
 @pytest.fixture()
-def build_cancel_request() -> BuildCancelRequest:
+def queued_build_cancel_request() -> BuildCancelRequest:
     return BuildCancelRequest(comment=Comment.CANCELING_QUEUED_BUILD, readdIntoQueue=False)
+
+
+@pytest.fixture()
+def running_build_cancel_request() -> BuildCancelRequest:
+    return BuildCancelRequest(comment=Comment.CANCELING_RUNNING_BUILD, readdIntoQueue=False)
 
 
 @pytest.fixture()

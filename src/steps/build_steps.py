@@ -98,12 +98,22 @@ class BuildSteps(BaseSteps):
         assert queued_build.id == build_id
         return queued_build
 
-    def cancel_queued_build(self, build_cancel_request: BuildCancelRequest, locator: str) -> QueueBuildResponse:
+    def cancel_queued_build(self, build_queued_cancel_request: BuildCancelRequest, locator: str) -> QueueBuildResponse:
         build_cancel_request: QueueBuildResponse = ValidatedCrudRequester(
             RequestSpecs.admin_base_headers(),
             Endpoint.CANCEL_QUEUED_BUILD,
             ResponseSpecs.request_return_ok()
-        ).post(build_cancel_request, locator)
+        ).post(build_queued_cancel_request, locator)
 
-        # ModelAssertions(cancel_queued_build_request, cancel_queued_build_response).match()
+        assert build_cancel_request.state == BuildState.QUEUED
+        return build_cancel_request
+
+    def cancel_running_build(self, build_queued_cancel_request: BuildCancelRequest, locator: str) -> QueueBuildResponse:
+        build_cancel_request: QueueBuildResponse = ValidatedCrudRequester(
+            RequestSpecs.admin_base_headers(),
+            Endpoint.CANCEL_RUNNING_BUILD,
+            ResponseSpecs.request_return_ok()
+        ).post(build_queued_cancel_request, locator)
+
+        # assert build_cancel_request.comment.text == build_queued_cancel_request.comment
         return build_cancel_request

@@ -102,7 +102,13 @@ class Endpoint(Enum):
     )
 
     CANCEL_QUEUED_BUILD = EndpointConfig(
-        url=f'buildQueue',
+        url='buildQueue',
+        request_model=BuildCancelRequest,
+        response_model=QueueBuildResponse,
+    )
+
+    CANCEL_RUNNING_BUILD = EndpointConfig(
+        url='builds',
         request_model=BuildCancelRequest,
         response_model=QueueBuildResponse,
     )
