@@ -19,3 +19,8 @@ class BuildStatus(StrEnum):
     SUCCESS = 'SUCCESS'     # for builds that have successfully finished or still running without errors.
     FAILURE = 'FAILURE'     # for builds that failed to start or failed during their run.
     UNKNOWN = 'UNKNOWN'     # for canceled builds.
+
+
+class BuildParams:
+    PARAM_NAME = 'env.SMOKE_PARAM'
+    PARAM_VALUE = 'NEW_parameter'
