@@ -35,6 +35,8 @@ class BuildTypeResponse(BaseModel):
 class Comment(BaseModel):
     text: Optional[str] = None
 
+class Comment(BaseModel):
+    text: str
 
 class QueueBuildResponse(BaseModel):
     id: int

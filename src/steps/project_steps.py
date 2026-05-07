@@ -54,3 +54,15 @@ class ProjectSteps(BaseSteps):
             Endpoint.DELETE_PROJECT,
             ResponseSpecs.entity_was_deleted(),
         ).delete(locator)
+        # Убираем из списка, чтобы cleanup не пытался удалить повторно
+        self.created_objects[:] = [
+            obj for obj in self.created_objects
+            if not (isinstance(obj, ProjectResponse) and obj.id == locator)
+        ]
+
+    def get_deleted_project(self, locator: str):
+        CrudRequester(
+            request_spec=RequestSpecs.admin_base_headers(),
+            endpoint=Endpoint.GET_PROJECTS,
+            response_spec=ResponseSpecs.entity_was_not_found(),
+        ).get(locator=locator)

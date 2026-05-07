@@ -14,7 +14,7 @@ def created_objects():
     cleanup_objects(objects)
 
 
-def cleanup_objects(objects: List[Any]):
+def cleanup_objects(objects: List[Any]):    # Важно: порядок удаления имеет значение.
     api_manager = ApiManager(objects)
     for obj in objects:  # 1) BuildTypes
         if isinstance(obj, BuildTypeResponse):

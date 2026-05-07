@@ -13,12 +13,8 @@ from src.steps.build_steps import BuildSteps
 
 
 @pytest.fixture()
-def build_steps() -> BuildSteps:
-    return BuildSteps()
-
-
-def _make_uid() -> str:
-    return RandomData.get_name()
+def build_steps(api_manager) -> BuildSteps:
+    return api_manager.build_steps
 
 
 @pytest.fixture()
@@ -26,7 +22,6 @@ def build_type_request(created_project) -> CreateBuildTypeRequest:
     build_type_data: CreateBuildTypeRequest = RandomModelGenerator.generate(CreateBuildTypeRequest)
     build_type_data.project = ProjectRef(id=created_project.id)
     return build_type_data
-# наверное надо через генератор создавать данные
 
 
 @pytest.fixture()

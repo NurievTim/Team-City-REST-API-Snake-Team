@@ -5,7 +5,6 @@ from src.models.project_models.create_project_request import CreateProjectReques
 import requests
 
 from src.configs.config import Config
-from src.generators.random_data import RandomData
 from src.requests.skeleton.endpoint import Endpoint
 from src.requests.skeleton.requesters.crud_requester import CrudRequester
 from src.specs.request_spec import RequestSpecs
@@ -14,12 +13,8 @@ from src.steps.project_steps import ProjectSteps
 
 
 @pytest.fixture()
-def project_steps() -> ProjectSteps:
-    return ProjectSteps()
-
-
-def _make_uid() -> str:
-    return RandomData.get_name()
+def project_steps(api_manager) -> ProjectSteps:
+    return api_manager.project_steps
 
 @pytest.fixture()
 def get_project_request():
