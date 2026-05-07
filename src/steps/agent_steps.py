@@ -7,6 +7,15 @@ from src.steps.base_steps import BaseSteps
 
 
 class AgentSteps(BaseSteps):
+    def get_authorized_agents(self) -> AgentsListResponse:
+        agents: AgentsListResponse = ValidatedCrudRequester(
+            RequestSpecs.admin_base_headers(),
+            Endpoint.GET_AGENT,
+            ResponseSpecs.request_return_ok(),
+        ).get(params={'locator': 'authorized:true'})
+
+        return agents
+
     def get_enabled_agents(self) -> AgentsListResponse:
         agents: AgentsListResponse = ValidatedCrudRequester(
             RequestSpecs.admin_base_headers(),
