@@ -18,6 +18,7 @@ class ProjectResponse(BaseModel):
     id: str
     name: str
     archived: Optional[bool] = None
+    parentProjectId: Optional[str] = None
 
 
 class ProjectsListResponse(BaseModel):

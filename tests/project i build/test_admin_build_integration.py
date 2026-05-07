@@ -51,6 +51,14 @@ class TestBuildConfig:
 
         assert fetched.project.get("id") == target_project.id
 
+    @allure.id("29.1")
+    @allure.title("POST /projects — создание подпроекта с parentProject")
+    def test_create_sub_project(self, api_manager: ApiManager, sub_project, created_project):
+        fetched = api_manager.project_steps.get_project_by_id(sub_project.id)
+
+        assert fetched.id == sub_project.id
+        assert fetched.parentProjectId == created_project.id
+
     @allure.id("29")
     @allure.title("GET /buildTypes?locator=affectedProject — рекурсивный поиск build configs")
     def test_get_build_by_affected_project(self, api_manager: ApiManager, build_type, sub_build_type, created_project):
