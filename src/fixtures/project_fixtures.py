@@ -69,6 +69,16 @@ def sub_project(api_manager, created_project):
 
 
 @pytest.fixture()
+def sub_project_request(created_project) -> CreateProjectRequest:
+    uid = RandomData.get_name()
+    return CreateProjectRequest(
+        id=f'{created_project.id}_Sub{uid}',
+        name=f'Sub_{uid}',
+        parentProject=ParentProject(locator=f'id:{created_project.id}')
+    )
+
+
+@pytest.fixture()
 def target_project(api_manager) -> ProjectResponse:
     project_data = RandomModelGenerator.generate(CreateProjectRequest)
     return api_manager.project_steps.create_project(project_data)
