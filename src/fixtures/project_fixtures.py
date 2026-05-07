@@ -1,10 +1,13 @@
 import pytest
 
+from src.generators.random_data import RandomData
 from src.generators.random_model_generator import RandomModelGenerator
 from src.models.project_models.create_project_request import CreateProjectRequest
 import requests
 
 from src.configs.config import Config
+from src.models.requests import ParentProject
+from src.models.responses import ProjectResponse
 from src.requests.skeleton.endpoint import Endpoint
 from src.requests.skeleton.requesters.crud_requester import CrudRequester
 from src.specs.request_spec import RequestSpecs
@@ -15,6 +18,7 @@ from src.steps.project_steps import ProjectSteps
 @pytest.fixture()
 def project_steps(api_manager) -> ProjectSteps:
     return api_manager.project_steps
+
 
 @pytest.fixture()
 def get_project_request():
@@ -51,3 +55,20 @@ def archive_project():
         ResponseSpecs.request_return_ok()(response)
 
     return _set_archived
+
+
+@pytest.fixture()
+def sub_project(api_manager, created_project):
+    uid = RandomData.get_name()
+    project_data = CreateProjectRequest(
+        id=f'{created_project.id}_Sub{uid}',
+        name=f'Sub_{uid}',
+        parentProject=ParentProject(locator=f'id:{created_project.id}')
+    )
+    return api_manager.project_steps.create_project(project_data)
+
+
+@pytest.fixture()
+def target_project(api_manager) -> ProjectResponse:
+    project_data = RandomModelGenerator.generate(CreateProjectRequest)
+    return api_manager.project_steps.create_project(project_data)

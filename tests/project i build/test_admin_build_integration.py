@@ -42,3 +42,19 @@ class TestBuildConfig:
         api_manager.build_steps.set_build_type_parameter(build_type.id, BuildParams.PARAM_NAME, BuildParams.PARAM_VALUE)
         parameter = api_manager.build_steps.get_build_type_parameter(build_type.id, BuildParams.PARAM_NAME)
         assert parameter.get("value") == BuildParams.PARAM_VALUE
+
+    @allure.id("28")
+    @allure.title("POST /buildTypes/{locator}/move — перемещение build configuration в другой проект")
+    def test_move_build_configuration(self, api_manager: ApiManager, build_type, target_project):
+        api_manager.build_steps.move_build_type_to_project(build_type.id, target_project.id)
+        fetched = api_manager.build_steps.get_build_type_by_id(build_type.id)
+
+        assert fetched.project.get("id") == target_project.id
+
+    @allure.id("29")
+    @allure.title("GET /buildTypes?locator=affectedProject — рекурсивный поиск build configs")
+    def test_get_build_by_affected_project(self, api_manager: ApiManager, build_type, sub_build_type, created_project):
+        build_types = api_manager.build_steps.get_build_by_affected_project(created_project.id)
+
+        assert build_type.id in build_types.get_ids()
+        assert sub_build_type.id in build_types.get_ids()

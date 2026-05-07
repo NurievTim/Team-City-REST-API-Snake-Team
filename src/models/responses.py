@@ -32,18 +32,28 @@ class BuildTypeResponse(BaseModel):
     paused: Optional[bool] = None
 
 
+class BuildTypesListResponse(BaseModel):
+    count: int
+    buildType: Optional[list[BuildTypeResponse]] = None
+
+    def get_ids(self) -> list[str]:
+        return [bt.id for bt in self.buildType or []]
+
+
 class Comment(BaseModel):
     text: Optional[str] = None
 
-class Comment(BaseModel):
-    text: str
+
+# class Comment(BaseModel):
+#     text: str
+
 
 class QueueBuildResponse(BaseModel):
     id: int
     state: str
     buildType: Optional[dict] = None
     status: Optional[str] = None
-    canceledInfo : Comment = Comment()
+    canceledInfo: Comment = Comment()
 
 
 class AgentResponse(BaseModel):

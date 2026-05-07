@@ -1,7 +1,7 @@
 from src.enums import BuildState, BuildComment, BuildStatus
 from src.models.comparison.model_assertions import ModelAssertions
 from src.models.requests import QueueBuildRequest, BuildCancelRequest, CreateBuildTypeRequest, CopyBuildTypeRequest
-from src.models.responses import QueueBuildResponse, BuildTypeResponse
+from src.models.responses import QueueBuildResponse, BuildTypeResponse, BuildTypesListResponse
 from src.requests.skeleton.endpoint import Endpoint
 from src.requests.skeleton.requesters.validated_crud_requester import ValidatedCrudRequester
 from src.specs.response_spec import ResponseSpecs
@@ -127,3 +127,18 @@ class BuildSteps(BaseSteps):
         assert build_cancel_response.status == BuildStatus.UNKNOWN
         assert build_cancel_response.canceledInfo.text == build_queued_cancel_request.comment
         return build_cancel_response
+
+    def move_build_type_to_project(self, build_type_id: str, target_project_id: str) -> None:
+        ValidatedCrudRequester(
+            RequestSpecs.admin_base_headers(),
+            Endpoint.MOVE_BUILD_TYPE,
+            ResponseSpecs.entity_was_deleted(),
+        ).post(locator=f'id:{build_type_id}/move?targetProjectId={target_project_id}')
+
+    def get_build_by_affected_project(self, project_id: str) -> BuildTypesListResponse:
+        build_types: BuildTypesListResponse = ValidatedCrudRequester(
+            RequestSpecs.admin_base_headers(),
+            Endpoint.GET_BUILD_TYPES_BY_PROJECT,
+            ResponseSpecs.request_return_ok(),
+        ).get(params={'locator': f'affectedProject:(id:{project_id})'})
+        return build_types

@@ -3,7 +3,7 @@ from typing import Any, List
 import pytest
 
 from src.classes.api_manager import ApiManager
-from src.models.responses import ProjectResponse, AgentsListResponse, BuildTypeResponse, AgentResponse
+from src.models.responses import ProjectResponse, BuildTypeResponse, AgentResponse, VcsRootResponse
 
 
 @pytest.fixture
@@ -20,9 +20,19 @@ def cleanup_objects(objects: List[Any]):    # Важно: порядок уда�
         if isinstance(obj, BuildTypeResponse):
             api_manager.build_steps.delete_build_type(obj.id)
 
-    for obj in objects:  # 2) Projects
+    for obj in objects:
         if isinstance(obj, ProjectResponse):
-            api_manager.project_steps.delete_project(obj.id)
+            try:
+                api_manager.project_steps.delete_project(obj.id)
+            except Exception:
+                pass
+
+    for obj in objects:
+        if isinstance(obj, ProjectResponse):
+            try:
+                api_manager.project_steps.delete_project(obj.id)
+            except Exception:
+                pass
 
     for obj in objects:  # 3) Agents (id строкой)
         if isinstance(obj, AgentResponse):

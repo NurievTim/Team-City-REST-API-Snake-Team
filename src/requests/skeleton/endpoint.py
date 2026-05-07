@@ -7,7 +7,7 @@ from src.models.requests import (CreateProjectRequest, CreateBuildTypeRequest, Q
                                  CreateVcsRootRequest, BuildCancelRequest)
 from src.models.responses import (ServerInfoResponse, CurrentUserResponse, ProjectResponse, ProjectsListResponse,
                                   BuildTypeResponse, QueueBuildResponse, AgentsListResponse, VcsRootResponse,
-                                  AgentResponse)
+                                  AgentResponse, BuildTypesListResponse)
 
 
 @dataclass(frozen=True)
@@ -102,10 +102,34 @@ class Endpoint(Enum):
         response_model=BuildTypeResponse,
     )
 
+    GET_BUILD_TYPES_BY_PROJECT = EndpointConfig(
+        url='buildTypes',
+        request_model=None,
+        response_model=BuildTypesListResponse,
+    )
+
+    MOVE_BUILD_TYPE = EndpointConfig(
+        url='buildTypes',
+        request_model=None,
+        response_model=BuildTypeResponse,
+    )
+
     CREATE_VCS_ROOT = EndpointConfig(
         url='vcs-roots',
         request_model=CreateVcsRootRequest,
         response_model=VcsRootResponse,
+    )
+
+    GET_VCS_ROOT = EndpointConfig(
+        url='vcs-roots',
+        request_model=None,
+        response_model=VcsRootResponse,
+    )
+
+    DELETE_VCS_ROOT = EndpointConfig(
+        url='vcs-roots',
+        request_model=None,
+        response_model=None,
     )
 
     CANCEL_QUEUED_BUILD = EndpointConfig(

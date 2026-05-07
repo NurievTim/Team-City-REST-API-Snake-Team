@@ -6,9 +6,10 @@ from src.requests.skeleton.requesters.crud_requester import CrudRequester
 from src.requests.skeleton.requesters.validated_crud_requester import ValidatedCrudRequester
 from src.specs.request_spec import RequestSpecs
 from src.specs.response_spec import ResponseSpecs
+from src.steps.base_steps import BaseSteps
 
 
-class ServerSteps:
+class ServerSteps(BaseSteps):
     def get_server_info(self) -> ServerInfoResponse:
         server_info: ServerInfoResponse = ValidatedCrudRequester(
             RequestSpecs.admin_base_headers(),

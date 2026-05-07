@@ -18,6 +18,8 @@ class ValidatedCrudRequester(HttpRequest):
 
     def post(self, model: Optional[T] = None, locator: Optional[str] = None):
         response = self.crud_requester.post(model=model, locator=locator)
+        if not response.content:
+            return None
         return self._adapter.validate_python(response.json())
 
     def get(self, locator: Optional[str] = None, params: Optional[dict] = None):

@@ -3,3 +3,4 @@ from src.fixtures.builds_fixtures import *
 from src.fixtures.api_fixtures import *
 from src.fixtures.object_fixtures import *
 from src.fixtures.agent_fixtures import *
+from src.fixtures.vcsroot_fixtures import vcs_root_request

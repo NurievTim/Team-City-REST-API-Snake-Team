@@ -58,3 +58,10 @@ def copy_build_request(build_type_request) -> CopyBuildTypeRequest:
         id=f'{build_type_request.id}_Copy{uid}',
         copyAllAssociatedSettings=True,
     )
+
+
+@pytest.fixture()
+def sub_build_type(api_manager, sub_project):
+    build_data = RandomModelGenerator.generate(CreateBuildTypeRequest)
+    build_data.project = ProjectRef(id=sub_project.id)
+    return api_manager.build_steps.create_build_type(build_data)
