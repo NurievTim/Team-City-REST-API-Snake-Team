@@ -29,6 +29,11 @@ class BuildTypeResponse(BaseModel):
     id: str
     name: str
     project: Optional[dict] = None
+    paused: Optional[bool] = None
+
+
+class Comment(BaseModel):
+    text: Optional[str] = None
 
 class Comment(BaseModel):
     text: str
@@ -38,7 +43,7 @@ class QueueBuildResponse(BaseModel):
     state: str
     buildType: Optional[dict] = None
     status: Optional[str] = None
-    comment : Optional[Comment] = None
+    canceledInfo : Comment = Comment()
 
 
 class AgentResponse(BaseModel):

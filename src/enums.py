@@ -9,7 +9,7 @@ class BuildState(StrEnum):
     UNKNOWN = 'unknown'
 
 
-class Comment(StrEnum):
+class BuildComment(StrEnum):
     CANCELING_QUEUED_BUILD = 'Canceling a queued build'
     CANCELING_RUNNING_BUILD = 'Canceling a running build'
 

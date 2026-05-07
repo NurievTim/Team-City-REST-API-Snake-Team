@@ -1,8 +1,11 @@
 import pytest
-from src.enums import Comment
+
+from src.enums import BuildComment
 from src.generators.random_model_generator import RandomModelGenerator
 from src.models.requests import BuildCancelRequest
 from src.models.responses import QueueBuildResponse, BuildTypeResponse
+
+
 from src.generators.random_data import RandomData
 from src.models.requests import CreateBuildTypeRequest, ProjectRef, QueueBuildRequest, BuildTypeRef, \
     CopyBuildTypeRequest
@@ -19,9 +22,6 @@ def build_type_request(created_project) -> CreateBuildTypeRequest:
     build_type_data: CreateBuildTypeRequest = RandomModelGenerator.generate(CreateBuildTypeRequest)
     build_type_data.project = ProjectRef(id=created_project.id)
     return build_type_data
-
-
-# наверное надо через генератор создавать данные
 
 
 @pytest.fixture()
@@ -41,12 +41,12 @@ def queue_build(queue_build_request, api_manager) -> QueueBuildResponse:
 
 @pytest.fixture()
 def queued_build_cancel_request() -> BuildCancelRequest:
-    return BuildCancelRequest(comment=Comment.CANCELING_QUEUED_BUILD, readdIntoQueue=False)
+    return BuildCancelRequest(comment=BuildComment.CANCELING_QUEUED_BUILD, readdIntoQueue=False)
 
 
 @pytest.fixture()
 def running_build_cancel_request() -> BuildCancelRequest:
-    return BuildCancelRequest(comment=Comment.CANCELING_RUNNING_BUILD, readdIntoQueue=False)
+    return BuildCancelRequest(comment=BuildComment.CANCELING_RUNNING_BUILD, readdIntoQueue=False)
 
 
 @pytest.fixture()

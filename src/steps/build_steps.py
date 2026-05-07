@@ -1,4 +1,4 @@
-from src.enums import BuildState, BuildStatus
+from src.enums import BuildState, BuildComment, BuildStatus
 from src.models.comparison.model_assertions import ModelAssertions
 from src.models.requests import QueueBuildRequest, BuildCancelRequest, CreateBuildTypeRequest, CopyBuildTypeRequest
 from src.models.responses import QueueBuildResponse, BuildTypeResponse
@@ -104,26 +104,26 @@ class BuildSteps(BaseSteps):
         assert queued_build.id == build_id
         return queued_build
 
-    def cancel_queued_build(self, build_queued_cancel_request: BuildCancelRequest,
-                            locator: str | int) -> QueueBuildResponse:
-        build_cancel_request: QueueBuildResponse = ValidatedCrudRequester(
+    def cancel_queued_build(self, build_queued_cancel_request: BuildCancelRequest, locator: str) -> QueueBuildResponse:
+        build_cancel_response: QueueBuildResponse = ValidatedCrudRequester(
             RequestSpecs.admin_base_headers(),
             Endpoint.CANCEL_QUEUED_BUILD,
             ResponseSpecs.request_return_ok()
-        ).post(build_queued_cancel_request, str(locator))
+        ).post(build_queued_cancel_request, locator)
 
-        # После отмены queued билда TC возвращает FINISHED со статусом UNKNOWN
-        assert build_cancel_request.state == BuildState.FINISHED
-        assert build_cancel_request.status == BuildStatus.UNKNOWN
-        return build_cancel_request
+        assert build_cancel_response.state == BuildState.FINISHED
+        assert build_cancel_response.status == BuildStatus.UNKNOWN
+        assert build_cancel_response.canceledInfo.text == build_queued_cancel_request.comment
+        return build_cancel_response
 
-    def cancel_running_build(self, build_queued_cancel_request: BuildCancelRequest,
-                             locator: str | int) -> QueueBuildResponse:
-        build_cancel_request: QueueBuildResponse = ValidatedCrudRequester(
+    def cancel_running_build(self, build_queued_cancel_request: BuildCancelRequest, locator: str) -> QueueBuildResponse:
+        build_cancel_response: QueueBuildResponse = ValidatedCrudRequester(
             RequestSpecs.admin_base_headers(),
             Endpoint.CANCEL_RUNNING_BUILD,
             ResponseSpecs.request_return_ok()
-        ).post(build_queued_cancel_request, str(locator))
+        ).post(build_queued_cancel_request, locator)
 
-        # assert build_cancel_request.comment.text == build_queued_cancel_request.comment
-        return build_cancel_request
+        assert build_cancel_response.state == BuildState.FINISHED
+        assert build_cancel_response.status == BuildStatus.UNKNOWN
+        assert build_cancel_response.canceledInfo.text == build_queued_cancel_request.comment
+        return build_cancel_response

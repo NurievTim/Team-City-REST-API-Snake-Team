@@ -16,7 +16,6 @@ from src.steps.project_steps import ProjectSteps
 def project_steps(api_manager) -> ProjectSteps:
     return api_manager.project_steps
 
-
 @pytest.fixture()
 def get_project_request():
     project_data: CreateProjectRequest = RandomModelGenerator.generate(CreateProjectRequest)
