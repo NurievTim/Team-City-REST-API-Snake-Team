@@ -6,7 +6,8 @@ from src.models.base_model import BaseModel
 from src.models.requests import (CreateProjectRequest, CreateBuildTypeRequest, QueueBuildRequest, CopyBuildTypeRequest,
                                  CreateVcsRootRequest, BuildCancelRequest)
 from src.models.responses import (ServerInfoResponse, CurrentUserResponse, ProjectResponse, ProjectsListResponse,
-                                  BuildTypeResponse, QueueBuildResponse, AgentsListResponse, VcsRootResponse)
+                                  BuildTypeResponse, QueueBuildResponse, AgentsListResponse, VcsRootResponse,
+                                  AgentResponse)
 
 
 @dataclass(frozen=True)
@@ -83,10 +84,16 @@ class Endpoint(Enum):
         response_model=QueueBuildResponse,
     )
 
-    GET_AGENT = EndpointConfig(
+    GET_LIST_AGENTS = EndpointConfig(
         url='agents',
         request_model=None,
         response_model=AgentsListResponse,
+    )
+
+    GET_AGENT = EndpointConfig(
+        url='agents',
+        request_model=None,
+        response_model=AgentResponse,
     )
 
     COPY_BUILD_TYPE_TO_PROJECT = EndpointConfig(
@@ -112,3 +119,5 @@ class Endpoint(Enum):
         request_model=BuildCancelRequest,
         response_model=QueueBuildResponse,
     )
+
+

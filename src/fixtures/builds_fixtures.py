@@ -1,6 +1,6 @@
 import pytest
 
-from src.enums import Comment
+from src.enums import BuildComment
 from src.generators.random_model_generator import RandomModelGenerator
 from src.models.requests import BuildCancelRequest
 from src.models.responses import QueueBuildResponse, BuildTypeResponse
@@ -46,12 +46,12 @@ def queue_build(queue_build_request, api_manager) -> QueueBuildResponse:
 
 @pytest.fixture()
 def queued_build_cancel_request() -> BuildCancelRequest:
-    return BuildCancelRequest(comment=Comment.CANCELING_QUEUED_BUILD, readdIntoQueue=False)
+    return BuildCancelRequest(comment=BuildComment.CANCELING_QUEUED_BUILD, readdIntoQueue=False)
 
 
 @pytest.fixture()
 def running_build_cancel_request() -> BuildCancelRequest:
-    return BuildCancelRequest(comment=Comment.CANCELING_RUNNING_BUILD, readdIntoQueue=False)
+    return BuildCancelRequest(comment=BuildComment.CANCELING_RUNNING_BUILD, readdIntoQueue=False)
 
 
 @pytest.fixture()

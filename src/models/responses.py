@@ -29,16 +29,19 @@ class BuildTypeResponse(BaseModel):
     id: str
     name: str
     project: Optional[dict] = None
+    paused: Optional[bool] = None
+
 
 class Comment(BaseModel):
-    text: str
+    text: Optional[str] = None
+
 
 class QueueBuildResponse(BaseModel):
     id: int
     state: str
     buildType: Optional[dict] = None
     status: Optional[str] = None
-    comment : Optional[Comment] = None
+    canceledInfo : Comment = Comment()
 
 
 class AgentResponse(BaseModel):
