@@ -3,7 +3,6 @@ import pytest
 
 from src.classes.api_manager import ApiManager
 from src.enums import BuildParams
-from src.models.requests import CopyBuildTypeRequest
 
 
 @pytest.mark.projectIbuild
@@ -17,6 +16,12 @@ class TestBuildConfig:
 
         assert fetched.id == build_type_request.id
         assert fetched.name == build_type_request.name
+
+    @allure.id("22.1")
+    @allure.title("DELETE /buildTypes/{locator} — удалить build type, повторный GET возвращает 404")
+    def test_delete_build_type_and_get_404(self, api_manager: ApiManager, build_type):
+        api_manager.build_steps.delete_build_type(build_type.id)
+        api_manager.build_steps.get_deleted_build_type(build_type.id)
 
     @allure.id("23")
     @allure.title("POST /projects/{projectLocator}/buildTypes — копирование build configuration")

@@ -14,6 +14,8 @@ class TestServer:
         server_info = api_manager.server_steps.get_server_info()
 
         assert server_info.version is not None
+        assert server_info.buildDate is not None
+        assert server_info.buildNumber is not None
 
     @allure.id("2")  # токен соответствует ожидаемому пользователю
     @allure.title("GET /users/current — HTTP 200, username совпадает с TC_ADMIN_USERNAME")

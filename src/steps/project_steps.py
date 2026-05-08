@@ -1,3 +1,5 @@
+from src.configs.config import Config
+import requests as http_requests
 from src.models.comparison.model_assertions import ModelAssertions
 from src.models.requests import CreateProjectRequest
 from src.models.responses import ProjectsListResponse, ProjectResponse
@@ -66,3 +68,14 @@ class ProjectSteps(BaseSteps):
             endpoint=Endpoint.GET_PROJECTS,
             response_spec=ResponseSpecs.entity_was_not_found(),
         ).get(locator=locator)
+
+    def archive_project(self, project_id: str, archived: bool):
+        headers = dict(RequestSpecs.admin_base_headers())
+        headers["Content-Type"] = "text/plain"
+        headers["Accept"] = "text/plain"
+        response = http_requests.put(
+            url=f"{Config.get('baseurl')}projects/id:{project_id}/archived",
+            data=str(archived).lower(),
+            headers=headers,
+        )
+        ResponseSpecs.request_return_ok()(response)

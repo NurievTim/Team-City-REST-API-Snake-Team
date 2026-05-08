@@ -1,12 +1,8 @@
 import pytest
 
-from src.generators.random_data import RandomData
+from src.generators.data_factory import make_sub_project_request
 from src.generators.random_model_generator import RandomModelGenerator
 from src.models.project_models.create_project_request import CreateProjectRequest
-import requests
-
-from src.configs.config import Config
-from src.models.requests import ParentProject
 from src.models.responses import ProjectResponse
 from src.requests.skeleton.endpoint import Endpoint
 from src.requests.skeleton.requesters.crud_requester import CrudRequester
@@ -42,40 +38,18 @@ def project_not_found():
 
 
 @pytest.fixture()
-def archive_project():
-    def _set_archived(project_id: str, archived: bool):
-        headers = dict(RequestSpecs.admin_base_headers())
-        headers["Content-Type"] = "text/plain"
-        headers["Accept"] = "text/plain"
-        response = requests.put(
-            url=f"{Config.get('baseurl')}projects/id:{project_id}/archived",
-            data=str(archived).lower(),
-            headers=headers,
-        )
-        ResponseSpecs.request_return_ok()(response)
-
-    return _set_archived
+def archive_project(api_manager):
+    return api_manager.project_steps.archive_project
 
 
 @pytest.fixture()
 def sub_project(api_manager, created_project):
-    uid = RandomData.get_name()
-    project_data = CreateProjectRequest(
-        id=f'{created_project.id}_Sub{uid}',
-        name=f'Sub_{uid}',
-        parentProject=ParentProject(locator=f'id:{created_project.id}')
-    )
-    return api_manager.project_steps.create_project(project_data)
+    return api_manager.project_steps.create_project(make_sub_project_request(created_project))
 
 
 @pytest.fixture()
 def sub_project_request(created_project) -> CreateProjectRequest:
-    uid = RandomData.get_name()
-    return CreateProjectRequest(
-        id=f'{created_project.id}_Sub{uid}',
-        name=f'Sub_{uid}',
-        parentProject=ParentProject(locator=f'id:{created_project.id}')
-    )
+    return make_sub_project_request(created_project)
 
 
 @pytest.fixture()

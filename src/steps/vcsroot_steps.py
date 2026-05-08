@@ -1,6 +1,7 @@
 from src.models.requests import CreateVcsRootRequest
 from src.models.responses import VcsRootResponse
 from src.requests.skeleton.endpoint import Endpoint
+from src.requests.skeleton.requesters.crud_requester import CrudRequester
 from src.requests.skeleton.requesters.validated_crud_requester import ValidatedCrudRequester
 from src.specs.request_spec import RequestSpecs
 from src.specs.response_spec import ResponseSpecs
@@ -34,3 +35,10 @@ class VcsRootSteps(BaseSteps):
             Endpoint.DELETE_VCS_ROOT,
             ResponseSpecs.entity_was_deleted(),
         ).delete(locator=f'id:{vcs_root_id}')
+
+    def get_deleted_vcs_root(self, vcs_root_id: str):
+        CrudRequester(
+            request_spec=RequestSpecs.admin_base_headers(),
+            endpoint=Endpoint.GET_VCS_ROOT,
+            response_spec=ResponseSpecs.entity_was_not_found(),
+        ).get(locator=f'id:{vcs_root_id}')

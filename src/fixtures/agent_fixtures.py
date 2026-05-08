@@ -11,7 +11,6 @@ def get_disable_agent(api_manager) -> AgentResponse:
     return agents.agent[0]
 
 
-
 @pytest.fixture()
 def enable_agent(get_disable_agent: AgentResponse, api_manager: ApiManager) -> None:
     api_manager.agent_steps.enable_agent(get_disable_agent)

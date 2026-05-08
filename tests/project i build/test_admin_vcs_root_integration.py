@@ -16,3 +16,9 @@ class TestVcsRootConfig:
         assert fetched.name == vcs_root_request.name
         assert fetched.vcsName == vcs_root_request.vcsName
 
+    @allure.id("26.1")
+    @allure.title("DELETE /vcs-roots/{locator} — удалить VCS Root, повторный GET возвращает 404")
+    def test_delete_vcs_root_and_get_404(self, api_manager: ApiManager, vcs_root_request):
+        created = api_manager.vcsroot_steps.create_vcs_root(vcs_root_request)
+        api_manager.vcsroot_steps.delete_vcs_root(created.id)
+        api_manager.vcsroot_steps.get_deleted_vcs_root(created.id)

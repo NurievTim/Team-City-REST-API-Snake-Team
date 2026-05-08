@@ -3,7 +3,7 @@ from typing import Any, List
 import pytest
 
 from src.classes.api_manager import ApiManager
-from src.models.responses import ProjectResponse, BuildTypeResponse, AgentResponse, VcsRootResponse
+from src.models.responses import ProjectResponse, BuildTypeResponse, AgentResponse
 
 
 @pytest.fixture

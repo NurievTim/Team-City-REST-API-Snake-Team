@@ -15,12 +15,39 @@ class BuildComment(StrEnum):
 
 
 class BuildStatus(StrEnum):
-    NULL = 'null'           # for queued builds.
-    SUCCESS = 'SUCCESS'     # for builds that have successfully finished or still running without errors.
-    FAILURE = 'FAILURE'     # for builds that failed to start or failed during their run.
-    UNKNOWN = 'UNKNOWN'     # for canceled builds.
+    NULL = 'null'  # for queued builds.
+    SUCCESS = 'SUCCESS'  # for builds that have successfully finished or still running without errors.
+    FAILURE = 'FAILURE'  # for builds that failed to start or failed during their run.
+    UNKNOWN = 'UNKNOWN'  # for canceled builds.
+
+
+class ContentType:
+    TEXT_PLAIN = 'text/plain'
+    APPLICATION_JSON = 'application/json'
+
+
+class ProjectParams:
+    SUB_ID_SUFFIX = '_Sub'
+    SUB_NAME_PREFIX = 'Sub_'
 
 
 class BuildParams:
     PARAM_NAME = 'env.SMOKE_PARAM'
     PARAM_VALUE = 'NEW_parameter'
+    COPY_NAME_PREFIX = 'Copied Build'
+    COPY_ID_SUFFIX = '_Copy'
+
+
+class VcsRootParams:
+    VCS_NAME = 'jetbrains.git'
+    AUTH_METHOD_NAME = 'authMethod'
+    AUTH_METHOD_VALUE = 'ADMIN'
+    BRANCH_NAME = 'branch'
+    BRANCH_VALUE = 'refs/heads/main'
+    URL_NAME = 'url'
+    URL_VALUE = 'https://github.com/JetBrains/teamcity-rest.git'
+    DEFAULT_PROPERTIES = [
+        {'name': 'authMethod', 'value': 'ANONYMOUS'},
+        {'name': 'branch', 'value': 'refs/heads/main'},
+        {'name': 'url', 'value': 'https://github.com/JetBrains/teamcity-rest.git'},
+    ]

@@ -3,6 +3,7 @@ from src.models.comparison.model_assertions import ModelAssertions
 from src.models.requests import QueueBuildRequest, BuildCancelRequest, CreateBuildTypeRequest, CopyBuildTypeRequest
 from src.models.responses import QueueBuildResponse, BuildTypeResponse, BuildTypesListResponse
 from src.requests.skeleton.endpoint import Endpoint
+from src.requests.skeleton.requesters.crud_requester import CrudRequester
 from src.requests.skeleton.requesters.validated_crud_requester import ValidatedCrudRequester
 from src.specs.response_spec import ResponseSpecs
 from src.steps.base_steps import BaseSteps
@@ -27,6 +28,17 @@ class BuildSteps(BaseSteps):
             Endpoint.DELETE_BUILD_TYPE,
             ResponseSpecs.entity_was_deleted(),
         ).delete(locator=f'id:{build_type_id}')
+        self.created_objects[:] = [
+            obj for obj in self.created_objects
+            if not (isinstance(obj, BuildTypeResponse) and obj.id == build_type_id)
+        ]
+
+    def get_deleted_build_type(self, build_type_id: str):
+        CrudRequester(
+            request_spec=RequestSpecs.admin_base_headers(),
+            endpoint=Endpoint.GET_BUILD_TYPE,
+            response_spec=ResponseSpecs.entity_was_not_found(),
+        ).get(locator=build_type_id)
 
     def get_build_type_by_id(self, build_type_id: str) -> BuildTypeResponse:
         build_type: BuildTypeResponse = ValidatedCrudRequester(

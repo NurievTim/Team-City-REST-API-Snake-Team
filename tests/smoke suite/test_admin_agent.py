@@ -12,3 +12,22 @@ class TestAgents:
     def test_get_authorized_agents(self, api_manager: ApiManager):
         agents = api_manager.agent_steps.get_authorized_agents()
         assert agents.count >= 1
+
+    @allure.id("7.1")
+    @allure.title("GET /agents?locator=enabled:true — список включённых агентов")
+    def test_get_enabled_agents(self, api_manager: ApiManager):
+        agents = api_manager.agent_steps.get_enabled_agents()
+        assert agents.count >= 1
+
+    @allure.id("7.2")
+    @allure.title("GET /agents?locator=enabled:false — список выключённых агентов")
+    def test_get_disabled_agents(self, api_manager: ApiManager):
+        agents = api_manager.agent_steps.get_disabled_agents()
+        assert agents is not None
+
+    @allure.id("7.3")
+    @allure.title("GET /agents/id:{id} — получить агента по id")
+    def test_get_agent_by_id(self, api_manager: ApiManager):
+        agents = api_manager.agent_steps.get_enabled_agents()
+        agent = api_manager.agent_steps.get_agent_by_id(agents.agent[0].id)
+        assert agent.id == agents.agent[0].id
