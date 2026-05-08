@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Optional
 
 from pydantic import Field
 
@@ -30,8 +30,21 @@ class BuildTypeRef(BaseModel):
     id: str
 
 
+class Comment(BaseModel):
+    text: Optional[str] = None
+
+
+class Agent(BaseModel):
+    id: Optional[int] = None
+
+
 class QueueBuildRequest(BaseModel):
     buildType: BuildTypeRef
+    branchName: Optional[str] = None
+    comment: Optional[Comment] = None
+    agent: Optional[Agent] = None
+    personal: Optional[bool] = None
+
 
 
 class CopyBuildTypeRequest(BaseModel):

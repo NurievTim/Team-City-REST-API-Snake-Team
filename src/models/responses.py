@@ -45,16 +45,13 @@ class Comment(BaseModel):
     text: Optional[str] = None
 
 
-# class Comment(BaseModel):
-#     text: str
-
-
 class QueueBuildResponse(BaseModel):
     id: int
     state: str
     buildType: Optional[dict] = None
     status: Optional[str] = None
-    canceledInfo: Comment = Comment()
+    comment: Optional[Comment] = None
+    canceledInfo: Optional[Comment] = None
 
 
 class AgentResponse(BaseModel):
