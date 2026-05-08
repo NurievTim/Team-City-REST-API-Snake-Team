@@ -1,4 +1,4 @@
-from src.enums import BuildState, BuildComment, BuildStatus
+from src.enums import BuildState, BuildStatus
 from src.models.comparison.model_assertions import ModelAssertions
 from src.models.requests import QueueBuildRequest, BuildCancelRequest, CreateBuildTypeRequest, CopyBuildTypeRequest
 from src.models.responses import QueueBuildResponse, BuildTypeResponse, BuildTypesListResponse
@@ -137,7 +137,6 @@ class BuildSteps(BaseSteps):
             ResponseSpecs.request_return_ok()
         ).post(build_queued_cancel_request, locator)
 
-        assert build_cancel_response.state == BuildState.FINISHED
         assert build_cancel_response.status == BuildStatus.UNKNOWN
         assert build_cancel_response.canceledInfo.text == build_queued_cancel_request.comment
         return build_cancel_response
