@@ -75,3 +75,47 @@ class VcsRootResponse(BaseModel):
     name: str
     vcsName: Optional[str] = None
     project: Optional[dict] = None
+
+
+class UserResponse(BaseModel):
+    id: int
+    username: str
+    email: Optional[str] = None
+    name: Optional[str] = None
+
+
+class UsersListResponse(BaseModel):
+    count: int
+    user: Optional[list] = None
+
+
+class TokenResponse(BaseModel):
+    name: str
+    value: Optional[str] = None
+    creationTime: Optional[str] = None
+
+
+class TokensListResponse(BaseModel):
+    count: int
+    token: Optional[list[TokenResponse]] = None
+
+
+class RoleResponse(BaseModel):
+    roleId: str
+    scope: Optional[str] = None
+    href: Optional[str] = None
+
+
+class RolesListResponse(BaseModel):
+    role: Optional[list[RoleResponse]] = None
+
+
+class GroupResponse(BaseModel):
+    key: str
+    name: Optional[str] = None
+    href: Optional[str] = None
+
+
+class GroupsListResponse(BaseModel):
+    count: int
+    group: Optional[list[GroupResponse]] = None

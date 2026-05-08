@@ -26,9 +26,14 @@ class ContentType:
     APPLICATION_JSON = 'application/json'
 
 
-class ProjectParams:
-    SUB_ID_SUFFIX = '_Sub'
-    SUB_NAME_PREFIX = 'Sub_'
+class UserParams:
+    NONEXISTENT_ID = '19191999191919919191991'
+
+
+class UserTokenParams:
+    MISSING_TOKEN_NAME = 'token-does-not-exist-123'
+    CREATE_FORBIDDEN_STATUS = 403
+    DELETE_MISSING_TOKEN_STATUSES = (400, 404)
 
 
 class BuildParams:

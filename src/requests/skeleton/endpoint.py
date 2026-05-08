@@ -3,11 +3,13 @@ from enum import Enum
 from typing import Optional
 
 from src.models.base_model import BaseModel
+from src.models.project_models.create_user_request import CreateUserRequest
 from src.models.requests import (CreateProjectRequest, CreateBuildTypeRequest, QueueBuildRequest, CopyBuildTypeRequest,
-                                 CreateVcsRootRequest, BuildCancelRequest)
+                                 CreateVcsRootRequest, BuildCancelRequest, RolesUpdateRequest, GroupsUpdateRequest)
 from src.models.responses import (ServerInfoResponse, CurrentUserResponse, ProjectResponse, ProjectsListResponse,
                                   BuildTypeResponse, QueueBuildResponse, AgentsListResponse, VcsRootResponse,
-                                  AgentResponse, BuildTypesListResponse)
+                                  AgentResponse, BuildTypesListResponse, UserResponse, TokenResponse,
+                                  TokensListResponse, RolesListResponse, GroupsListResponse, UsersListResponse)
 
 
 @dataclass(frozen=True)
@@ -144,4 +146,80 @@ class Endpoint(Enum):
         response_model=QueueBuildResponse,
     )
 
+    CREATE_USER = EndpointConfig(
+        url='users',
+        request_model=CreateUserRequest,
+        response_model=UserResponse,
+    )
 
+    GET_USER = EndpointConfig(
+        url='users',
+        request_model=None,
+        response_model=UserResponse,
+    )
+
+    GET_USERS = EndpointConfig(
+        url='users',
+        request_model=None,
+        response_model=UsersListResponse,
+    )
+
+    GET_USER_GROUPS = EndpointConfig(
+        url='users',
+        request_model=None,
+        response_model=GroupsListResponse,
+    )
+
+    UPDATE_USER_GROUPS = EndpointConfig(
+        url='users',
+        request_model=GroupsUpdateRequest,
+        response_model=GroupsListResponse,
+    )
+
+    DELETE_USER = EndpointConfig(
+        url='users',
+        request_model=None,
+        response_model=None,
+    )
+
+    DELETE_USER_FROM_GROUP = EndpointConfig(
+        url='users',
+        request_model=None,
+        response_model=None,
+    )
+
+    GET_USER_ROLES = EndpointConfig(
+        url='users',
+        request_model=None,
+        response_model=RolesListResponse,
+    )
+
+    UPDATE_USER_ROLES = EndpointConfig(
+        url='users',
+        request_model=RolesUpdateRequest,
+        response_model=RolesListResponse,
+    )
+
+    DELETE_USER_ROLE = EndpointConfig(
+        url='users',
+        request_model=None,
+        response_model=None,
+    )
+
+    GET_USER_TOKENS = EndpointConfig(
+        url='users',
+        request_model=None,
+        response_model=TokensListResponse,
+    )
+
+    CREATE_USER_TOKEN = EndpointConfig(
+        url='users',
+        request_model=None,
+        response_model=TokenResponse,
+    )
+
+    DELETE_USER_TOKEN = EndpointConfig(
+        url='users',
+        request_model=None,
+        response_model=None,
+    )

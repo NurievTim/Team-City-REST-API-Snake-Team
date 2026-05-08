@@ -66,3 +66,19 @@ class BuildCancelRequest(BaseModel):
     comment: str
     readdIntoQueue: bool
 
+
+class GroupRef(BaseModel):
+    key: str
+
+
+class GroupsUpdateRequest(BaseModel):
+    group: list[GroupRef]
+
+
+class RoleRef(BaseModel):
+    roleId: str
+    scope: str
+
+
+class RolesUpdateRequest(BaseModel):
+    role: list[RoleRef]
