@@ -11,9 +11,9 @@ class ParentProject(BaseModel):
 
 
 class CreateProjectRequest(BaseModel):
-    id: str
-    name: str
-    parentProject: ParentProject = ParentProject()
+    id: Annotated[str, GeneratingRule(regex=r"^ProjectId_[a-z0-9]{4}$")]
+    name: Annotated[str, GeneratingRule(regex=r"^ProjectName_[a-z0-9]{4}$")]
+    parentProject: Annotated[ParentProject, GeneratingRule(skip=True)] = ParentProject()
 
 
 class ProjectRef(BaseModel):
@@ -95,3 +95,10 @@ class RoleRef(BaseModel):
 
 class RolesUpdateRequest(BaseModel):
     role: list[RoleRef]
+
+
+class CreateUserRequest(BaseModel):
+    username: Annotated[str, GeneratingRule(regex=r"^[A-Za-z][A-Za-z0-9]{3,10}$")]
+    password: Annotated[str, GeneratingRule(regex=r"^[A-Z]{2}[a-z]{3}[0-9]{2}[!@#]{1}$")]
+    email: Annotated[Optional[str], GeneratingRule(skip=True)] = None
+    name: Annotated[Optional[str], GeneratingRule(skip=True)] = None

@@ -2,7 +2,7 @@ import pytest
 
 from src.generators.data_factory import make_sub_project_request
 from src.generators.random_model_generator import RandomModelGenerator
-from src.models.project_models.create_project_request import CreateProjectRequest
+from src.models.requests import CreateProjectRequest
 from src.models.responses import ProjectResponse
 from src.requests.skeleton.endpoint import Endpoint
 from src.requests.skeleton.requesters.crud_requester import CrudRequester

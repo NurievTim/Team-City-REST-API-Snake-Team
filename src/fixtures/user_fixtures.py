@@ -1,6 +1,6 @@
 import pytest
 from src.generators.random_model_generator import RandomModelGenerator
-from src.models.project_models.create_user_request import CreateUserRequest
+from src.models.requests import CreateUserRequest
 
 
 @pytest.fixture()
