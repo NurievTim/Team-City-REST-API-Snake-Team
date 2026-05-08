@@ -1,9 +1,9 @@
 import pytest
 
-from src.enums import BuildComment
+from src.enums import BuildComment, VcsRootParams
 from src.generators.data_factory import make_copy_build_request
 from src.generators.random_model_generator import RandomModelGenerator
-from src.models.requests import BuildCancelRequest
+from src.models.requests import BuildCancelRequest, Agent, Comment
 from src.models.responses import QueueBuildResponse, BuildTypeResponse
 from src.models.requests import CreateBuildTypeRequest, ProjectRef, QueueBuildRequest, BuildTypeRef, \
     CopyBuildTypeRequest
@@ -57,3 +57,14 @@ def sub_build_type(api_manager, sub_project):
     build_data = RandomModelGenerator.generate(CreateBuildTypeRequest)
     build_data.project = ProjectRef(id=sub_project.id)
     return api_manager.build_steps.create_build_type(build_data)
+
+
+@pytest.fixture()
+def custom_build_request(build_type, get_enable_agent) -> QueueBuildRequest:
+    return QueueBuildRequest(
+        buildType=BuildTypeRef(id=build_type.id),
+        branchName=VcsRootParams.BRANCH_VALUE,
+        agent=Agent(id=get_enable_agent.id),
+        comment=Comment(text=BuildComment.CUSTOM_BUILD),
+        personal=False
+    )

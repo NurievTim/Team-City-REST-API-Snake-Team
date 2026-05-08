@@ -2,8 +2,8 @@ import allure
 import pytest
 
 from src.classes.api_manager import ApiManager
-from src.enums import BuildStatus, BuildState
-from src.models.requests import BuildCancelRequest
+from src.enums import BuildState
+from src.models.requests import BuildCancelRequest, QueueBuildRequest
 from src.models.responses import QueueBuildResponse
 
 
@@ -25,7 +25,8 @@ class TestCancelBuild:
     @allure.title("Отмена запущенного билда (running)")
     @pytest.mark.usefixtures('enable_agent', 'api_manager', 'queue_build', 'running_build_cancel_request')
     def test_cancel_running_build(
-            self, api_manager: ApiManager,
+            self,
+            api_manager: ApiManager,
             queue_build: QueueBuildResponse,
             running_build_cancel_request: BuildCancelRequest
     ):

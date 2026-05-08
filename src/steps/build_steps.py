@@ -116,7 +116,8 @@ class BuildSteps(BaseSteps):
         assert queued_build.id == build_id
         return queued_build
 
-    def cancel_queued_build(self, build_queued_cancel_request: BuildCancelRequest, locator: str) -> QueueBuildResponse:
+    def cancel_queued_build(self, build_queued_cancel_request: BuildCancelRequest, locator: str | int) \
+            -> QueueBuildResponse:
         build_cancel_response: QueueBuildResponse = ValidatedCrudRequester(
             RequestSpecs.admin_base_headers(),
             Endpoint.CANCEL_QUEUED_BUILD,
@@ -128,7 +129,8 @@ class BuildSteps(BaseSteps):
         assert build_cancel_response.canceledInfo.text == build_queued_cancel_request.comment
         return build_cancel_response
 
-    def cancel_running_build(self, build_queued_cancel_request: BuildCancelRequest, locator: str) -> QueueBuildResponse:
+    def cancel_running_build(self, build_queued_cancel_request: BuildCancelRequest, locator: str | int) \
+            -> QueueBuildResponse:
         build_cancel_response: QueueBuildResponse = ValidatedCrudRequester(
             RequestSpecs.admin_base_headers(),
             Endpoint.CANCEL_RUNNING_BUILD,
