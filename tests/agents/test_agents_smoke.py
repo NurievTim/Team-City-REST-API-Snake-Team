@@ -5,7 +5,8 @@ from src.classes.api_manager import ApiManager
 
 
 @pytest.mark.smoke
-class TestAgents:
+@pytest.mark.agents
+class TestAgentsSmoke:
 
     @allure.id("7")  # В окружении есть хотя бы один авторизованный агент
     @allure.title("GET /agents?locator=authorized:true — HTTP 200, >= 1 авторизованный агент")
@@ -15,7 +16,8 @@ class TestAgents:
 
     @allure.id("7.1")
     @allure.title("GET /agents?locator=enabled:true — список включённых агентов")
-    def test_get_enabled_agents(self, api_manager: ApiManager):
+    @pytest.mark.usefixture('enable_agent')
+    def test_get_enabled_agents(self, api_manager: ApiManager, enable_agent):
         agents = api_manager.agent_steps.get_enabled_agents()
         assert agents.count >= 1
 
@@ -27,7 +29,8 @@ class TestAgents:
 
     @allure.id("7.3")
     @allure.title("GET /agents/id:{id} — получить агента по id")
-    def test_get_agent_by_id(self, api_manager: ApiManager):
+    @pytest.mark.usefixture('enable_agent')
+    def test_get_agent_by_id(self, api_manager: ApiManager, enable_agent):
         agents = api_manager.agent_steps.get_enabled_agents()
         agent = api_manager.agent_steps.get_agent_by_id(agents.agent[0].id)
         assert agent.id == agents.agent[0].id

@@ -1,5 +1,4 @@
-from src.models.project_models.create_user_request import CreateUserRequest
-from src.models.requests import GroupsUpdateRequest, GroupRef, RolesUpdateRequest, RoleRef
+from src.models.requests import GroupsUpdateRequest, GroupRef, RolesUpdateRequest, RoleRef, CreateUserRequest
 from src.models.responses import (
     UserResponse, UsersListResponse, GroupsListResponse,
     RolesListResponse, TokensListResponse, TokenResponse, CurrentUserResponse,

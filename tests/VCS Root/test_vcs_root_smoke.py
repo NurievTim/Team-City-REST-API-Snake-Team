@@ -4,8 +4,9 @@ import pytest
 from src.classes.api_manager import ApiManager
 
 
-@pytest.mark.projectIbuild
-class TestVcsRootConfig:
+@pytest.mark.smoke
+@pytest.mark.vcs_root
+class TestVcsRootSmoke:
     @allure.id("26")
     @allure.title("POST /vcs-roots — создание VCS Root")
     def test_create_vcs_root(self, api_manager: ApiManager, vcs_root_request):

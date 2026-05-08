@@ -6,7 +6,8 @@ from src.enums import BuildState
 
 
 @pytest.mark.smoke
-class TestBuilds:
+@pytest.mark.builds
+class TestBuildsSmoke:
     @allure.id("5.1")
     @allure.title("POST /buildTypes — создать build configs, id и name совпадают")
     def test_create_build_type(self, api_manager: ApiManager, build_type_request):

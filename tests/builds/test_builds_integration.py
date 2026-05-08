@@ -1,12 +1,46 @@
+import time
+
 import allure
 import pytest
 
 from src.classes.api_manager import ApiManager
-from src.enums import BuildParams
+from src.enums import BuildParams, BuildState
+from src.models.requests import BuildCancelRequest, QueueBuildRequest
+from src.models.responses import QueueBuildResponse
 
 
-@pytest.mark.projectIbuild
-class TestBuildConfig:
+@pytest.mark.integraion
+@pytest.mark.builds
+class TestBuildIntegration:
+    @allure.id("8")
+    @allure.title("Отмена билда в очереди (queued)")
+    @pytest.mark.usefixtures('queue_build', 'api_manager', 'queued_build_cancel_request')
+    def test_cancel_queued_build(
+            self,
+            api_manager: ApiManager,
+            queue_build: QueueBuildResponse,
+            queued_build_cancel_request: BuildCancelRequest
+    ):
+        canceled_build = api_manager.build_steps.cancel_queued_build(queued_build_cancel_request, queue_build.id)
+        get_build = api_manager.build_steps.get_queued_build_by_id(queue_build.id)
+
+        assert canceled_build.state == get_build.state
+        assert canceled_build.status == get_build.status
+
+    @allure.id("9")
+    @allure.title("Отмена запущенного билда (running)")
+    @pytest.mark.usefixtures('enable_agent', 'api_manager', 'queue_build', 'running_build_cancel_request')
+    def test_cancel_running_build(
+            self,
+            api_manager: ApiManager,
+            queue_build: QueueBuildResponse,
+            running_build_cancel_request: BuildCancelRequest
+    ):
+        canceled_build = api_manager.build_steps.cancel_running_build(running_build_cancel_request, queue_build.id)
+        get_build = api_manager.build_steps.get_queued_build_by_id(queue_build.id)
+
+        assert canceled_build.state == get_build.state
+        assert canceled_build.status == get_build.status
 
     @allure.id("22")
     @allure.title("POST /buildTypes — создать build configuration")
@@ -22,6 +56,20 @@ class TestBuildConfig:
     def test_delete_build_type_and_get_404(self, api_manager: ApiManager, build_type):
         api_manager.build_steps.delete_build_type(build_type.id)
         api_manager.build_steps.get_deleted_build_type(build_type.id)
+
+    @allure.id("10")
+    @allure.title("Запуск custom build (параметры, ветка, агент)")
+    @pytest.mark.usefixtures('enable_agent', 'api_manager', 'custom_build_request')
+    def test_start_custom_build(
+            self,
+            api_manager: ApiManager,
+            custom_build_request: QueueBuildRequest,
+            enable_agent
+    ):
+        response = api_manager.build_steps.add_build_to_queue(custom_build_request)
+        get_build = api_manager.build_steps.get_queued_build_by_id(response.id)
+
+        assert custom_build_request.comment.text == get_build.comment.text
 
     @allure.id("23")
     @allure.title("POST /projects/{projectLocator}/buildTypes — копирование build configuration")
@@ -55,15 +103,6 @@ class TestBuildConfig:
         fetched = api_manager.build_steps.get_build_type_by_id(build_type.id)
 
         assert fetched.project.get("id") == target_project.id
-
-    @allure.id("29.1")
-    @allure.title("POST /projects — создание подпроекта с parentProject")
-    def test_create_sub_project(self, api_manager: ApiManager, created_project, sub_project_request):
-        created = api_manager.project_steps.create_project(sub_project_request)
-        fetched = api_manager.project_steps.get_project_by_id(created.id)
-
-        assert fetched.id == sub_project_request.id
-        assert fetched.parentProjectId == created_project.id
 
     @allure.id("29")
     @allure.title("GET /buildTypes?locator=affectedProject — рекурсивный поиск build configs")

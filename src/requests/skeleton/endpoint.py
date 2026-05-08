@@ -3,9 +3,9 @@ from enum import Enum
 from typing import Optional
 
 from src.models.base_model import BaseModel
-from src.models.project_models.create_user_request import CreateUserRequest
 from src.models.requests import (CreateProjectRequest, CreateBuildTypeRequest, QueueBuildRequest, CopyBuildTypeRequest,
-                                 CreateVcsRootRequest, BuildCancelRequest, RolesUpdateRequest, GroupsUpdateRequest)
+                                 CreateVcsRootRequest, BuildCancelRequest, RolesUpdateRequest, GroupsUpdateRequest,
+                                 CreateUserRequest)
 from src.models.responses import (ServerInfoResponse, CurrentUserResponse, ProjectResponse, ProjectsListResponse,
                                   BuildTypeResponse, QueueBuildResponse, AgentsListResponse, VcsRootResponse,
                                   AgentResponse, BuildTypesListResponse, UserResponse, TokenResponse,

@@ -1,10 +1,9 @@
 from src.enums import VcsRootParams, BuildParams
 from src.generators.random_data import RandomData
 from src.generators.random_model_generator import RandomModelGenerator
-from src.models.project_models.create_project_request import CreateProjectRequest
 from src.models.requests import (
     ParentProject, CreateVcsRootRequest, VcsRootProjectRef,
-    VcsRootProperties, VcsRootProperty, CopyBuildTypeRequest, CreateBuildTypeRequest
+    VcsRootProperties, VcsRootProperty, CopyBuildTypeRequest, CreateBuildTypeRequest, CreateProjectRequest
 )
 
 
