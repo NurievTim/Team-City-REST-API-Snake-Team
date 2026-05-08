@@ -25,7 +25,7 @@ class CrudRequester(HttpRequest, CrudEndpointInterface):
             url = f"{url}/{locator}"
         if suffix:
             url = f"{url}/{suffix}"
-        response = requests.post(url=url, json=model.model_dump(), headers=self.headers)
+        response = requests.post(url=url, json=model.model_dump() if model is not None else None, headers=self.headers)
         self.response_spec(response)
         return response
 

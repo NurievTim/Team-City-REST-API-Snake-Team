@@ -1,12 +1,10 @@
 import pytest
 
 from src.enums import BuildComment
+from src.generators.data_factory import make_copy_build_request
 from src.generators.random_model_generator import RandomModelGenerator
 from src.models.requests import BuildCancelRequest
 from src.models.responses import QueueBuildResponse, BuildTypeResponse
-
-
-from src.generators.random_data import RandomData
 from src.models.requests import CreateBuildTypeRequest, ProjectRef, QueueBuildRequest, BuildTypeRef, \
     CopyBuildTypeRequest
 from src.steps.build_steps import BuildSteps
@@ -51,10 +49,11 @@ def running_build_cancel_request() -> BuildCancelRequest:
 
 @pytest.fixture()
 def copy_build_request(build_type_request) -> CopyBuildTypeRequest:
-    uid = RandomData.get_name()
-    return CopyBuildTypeRequest(
-        sourceBuildTypeLocator=f'id:{build_type_request.id}',
-        name=f'Copied Build {uid}',
-        id=f'{build_type_request.id}_Copy{uid}',
-        copyAllAssociatedSettings=True,
-    )
+    return make_copy_build_request(build_type_request)
+
+
+@pytest.fixture()
+def sub_build_type(api_manager, sub_project):
+    build_data = RandomModelGenerator.generate(CreateBuildTypeRequest)
+    build_data.project = ProjectRef(id=sub_project.id)
+    return api_manager.build_steps.create_build_type(build_data)

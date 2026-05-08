@@ -18,6 +18,7 @@ class ProjectResponse(BaseModel):
     id: str
     name: str
     archived: Optional[bool] = None
+    parentProjectId: Optional[str] = None
 
 
 class ProjectsListResponse(BaseModel):
@@ -32,18 +33,28 @@ class BuildTypeResponse(BaseModel):
     paused: Optional[bool] = None
 
 
+class BuildTypesListResponse(BaseModel):
+    count: int
+    buildType: Optional[list[BuildTypeResponse]] = None
+
+    def get_ids(self) -> list[str]:
+        return [bt.id for bt in self.buildType or []]
+
+
 class Comment(BaseModel):
     text: Optional[str] = None
 
-class Comment(BaseModel):
-    text: str
+
+# class Comment(BaseModel):
+#     text: str
+
 
 class QueueBuildResponse(BaseModel):
     id: int
     state: str
     buildType: Optional[dict] = None
     status: Optional[str] = None
-    canceledInfo : Comment = Comment()
+    canceledInfo: Comment = Comment()
 
 
 class AgentResponse(BaseModel):
@@ -64,3 +75,47 @@ class VcsRootResponse(BaseModel):
     name: str
     vcsName: Optional[str] = None
     project: Optional[dict] = None
+
+
+class UserResponse(BaseModel):
+    id: int
+    username: str
+    email: Optional[str] = None
+    name: Optional[str] = None
+
+
+class UsersListResponse(BaseModel):
+    count: int
+    user: Optional[list] = None
+
+
+class TokenResponse(BaseModel):
+    name: str
+    value: Optional[str] = None
+    creationTime: Optional[str] = None
+
+
+class TokensListResponse(BaseModel):
+    count: int
+    token: Optional[list[TokenResponse]] = None
+
+
+class RoleResponse(BaseModel):
+    roleId: str
+    scope: Optional[str] = None
+    href: Optional[str] = None
+
+
+class RolesListResponse(BaseModel):
+    role: Optional[list[RoleResponse]] = None
+
+
+class GroupResponse(BaseModel):
+    key: str
+    name: Optional[str] = None
+    href: Optional[str] = None
+
+
+class GroupsListResponse(BaseModel):
+    count: int
+    group: Optional[list[GroupResponse]] = None
