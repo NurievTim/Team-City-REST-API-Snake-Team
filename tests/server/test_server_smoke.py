@@ -6,7 +6,8 @@ from src.classes.api_manager import ApiManager
 
 
 @pytest.mark.smoke
-class TestServer:
+@pytest.mark.server
+class TestServerSmoke:
 
     @allure.id("1")  # сервер отвечает и возвращает версию
     @allure.title("GET /server — HTTP 200, поле version присутствует")

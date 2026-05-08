@@ -4,8 +4,9 @@ from src.enums import UserParams
 from src.classes.api_manager import ApiManager
 
 
-@pytest.mark.projectIbuild
-class TestUserConfig:
+@pytest.mark.users
+@pytest.mark.integration
+class TestUsersIntegration:
 
     @allure.id("33")
     @allure.title("POST /users — создание пользователя")  # !!!  Баг? Teamsity отдаёт в нижнем регистре юзернэйм!

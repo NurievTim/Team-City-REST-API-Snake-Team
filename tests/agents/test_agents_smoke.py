@@ -5,7 +5,8 @@ from src.classes.api_manager import ApiManager
 
 
 @pytest.mark.smoke
-class TestAgents:
+@pytest.mark.agents
+class TestAgentsSmoke:
 
     @allure.id("7")  # В окружении есть хотя бы один авторизованный агент
     @allure.title("GET /agents?locator=authorized:true — HTTP 200, >= 1 авторизованный агент")
