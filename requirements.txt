@@ -1,4 +1,9 @@
-pytest
-requests
+pytest~=8.4.2
+requests~=2.32.5
 allure-pytest
-pydantic
+pydantic~=2.11.9
+python-dotenv~=1.0.0
+uuid~=1.30
+Faker~=37.8.0
+rstr~=3.2.2
+playwright~=1.55.0

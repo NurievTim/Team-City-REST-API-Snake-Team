@@ -46,7 +46,6 @@ class QueueBuildRequest(BaseModel):
     personal: Optional[bool] = None
 
 
-
 class CopyBuildTypeRequest(BaseModel):
     sourceBuildTypeLocator: str
     name: str
