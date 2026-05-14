@@ -22,13 +22,13 @@ class BuildStatus(StrEnum):
     UNKNOWN = 'UNKNOWN'  # for canceled builds.
 
 
-class ContentType:
+class ContentType(StrEnum):
     TEXT_PLAIN = 'text/plain'
     APPLICATION_JSON = 'application/json'
 
 
-class UserParams:
-    NONEXISTENT_ID = '19191999191919919191991'
+class UserParams(StrEnum):
+    NONEXISTENT_ID = '191919991919'
 
 
 class UserTokenParams:
@@ -37,7 +37,7 @@ class UserTokenParams:
     DELETE_MISSING_TOKEN_STATUSES = (400, 404)
 
 
-class BuildParams:
+class BuildParams(StrEnum):
     PARAM_NAME = 'env.SMOKE_PARAM'
     PARAM_VALUE = 'NEW_parameter'
     COPY_NAME_PREFIX = 'Copied Build'
@@ -57,3 +57,9 @@ class VcsRootParams:
         {'name': 'branch', 'value': 'refs/heads/main'},
         {'name': 'url', 'value': 'https://github.com/JetBrains/teamcity-rest.git'},
     ]
+
+
+class UiAlert(StrEnum):
+    INCORRECT_DATA = 'Incorrect username or password.'
+    LOGIN_PAGE_VISIBLE = 'Log in to TeamCity'
+    LOGIN_LIMIT_MSG = 'You made 5 failed login attempts in 1m.'
