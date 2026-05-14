@@ -1,3 +1,7 @@
+import allure
+from playwright.sync_api import expect
+
+from src.enums import UiAlert
 from src.ui_pages.base_page import BasePage
 
 
@@ -32,3 +36,17 @@ class LoginPage(BasePage):
 
     def click_login_button(self):
         self.login_button.click()
+
+    def check_incorrect_data_error(self):
+        with allure.step("Проверить сообщение об ошибке INCORRECT_DATA"):
+            expect(self.error_message).to_be_visible()
+            expect(self.error_message).to_have_text(UiAlert.INCORRECT_DATA)
+
+    def check_text_login_to_tc(self):
+        with allure.step("Проверить на наличее текста 'Log in to TeamCity'"):
+            expect(self.login_to_teamcity_text).to_be_visible()
+            expect(self.login_to_teamcity_text).to_have_text(UiAlert.LOGIN_PAGE_VISIBLE)
+
+    def check_limit_auth_error(self):
+        expect(self.error_message).to_be_visible()
+        expect(self.error_message).to_contain_text(UiAlert.LOGIN_LIMIT_MSG)

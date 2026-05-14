@@ -1,6 +1,7 @@
 from playwright.sync_api import Page, expect
 
 from src.configs.config import Config
+from src.enums import UiAlert
 from src.ui_pages.login_page import LoginPage
 
 
@@ -12,7 +13,7 @@ class BaseUITest:
         login_page = LoginPage(page).open()
 
         expect(page.locator("#header")).to_be_visible()
-        expect(page.locator("#header")).to_have_text("Log in to TeamCity")
+        expect(page.locator("#header")).to_have_text(UiAlert.LOGIN_PAGE_VISIBLE)
 
         login_page.admin_login(admin_username, admin_password)
         return login_page
