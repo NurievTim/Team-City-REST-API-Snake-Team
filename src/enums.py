@@ -28,7 +28,7 @@ class ContentType(StrEnum):
 
 
 class UserParams(StrEnum):
-    NONEXISTENT_ID = '19191999191919919191991'
+    NONEXISTENT_ID = '191919991919'
 
 
 class UserTokenParams:
