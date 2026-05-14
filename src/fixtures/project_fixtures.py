@@ -53,6 +53,8 @@ def sub_project_request(created_project) -> CreateProjectRequest:
 
 
 @pytest.fixture()
-def target_project(api_manager) -> ProjectResponse:
+def target_project(api_manager, created_objects) -> ProjectResponse:
     project_data = RandomModelGenerator.generate(CreateProjectRequest)
-    return api_manager.project_steps.create_project(project_data)
+    project = api_manager.project_steps.create_project(project_data)
+    created_objects.append(project)
+    return project
