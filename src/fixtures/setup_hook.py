@@ -1,5 +1,5 @@
 import pytest
-from playwright.async_api import Page
+from playwright.sync_api import Page
 
 from src.models.requests import LoginUserRequest
 from src.ui_pages.login_page import LoginPage

@@ -1,7 +1,7 @@
 import time
 
 import pytest
-from playwright.async_api import Page
+from playwright.sync_api import Page
 
 from src.ui_pages.project_page import ProjectPanel
 

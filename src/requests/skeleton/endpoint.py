@@ -225,7 +225,7 @@ class Endpoint(Enum):
     )
 
     LOGIN_USER = EndpointConfig(
-        url='/app/login.html',
+        url='login.html',
         request_model=LoginUserRequest,
         response_model=None
     )

@@ -1,7 +1,6 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 
-import requests
 from typing import TypeVar, Type
 from playwright.sync_api import Page
 from src.configs.config import Config
