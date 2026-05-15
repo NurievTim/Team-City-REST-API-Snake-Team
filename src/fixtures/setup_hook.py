@@ -1,6 +1,8 @@
 import pytest
+from playwright.async_api import Page
 
 from src.models.requests import LoginUserRequest
+from src.ui_pages.login_page import LoginPage
 
 
 @pytest.fixture(autouse=True)

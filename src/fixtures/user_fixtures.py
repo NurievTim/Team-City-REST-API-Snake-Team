@@ -1,6 +1,6 @@
 import pytest
 from src.generators.random_model_generator import RandomModelGenerator
-from src.models.requests import CreateUserRequest
+from src.models.requests import CreateUserRequest, LoginUserRequest
 
 
 @pytest.fixture()
@@ -14,5 +14,5 @@ def created_user(user_request, api_manager):
 
 
 @pytest.fixture
-def admin_user_request():
-    return CreateUserRequest(username='admin', password='admin')
+def admin_user_request(admin_username, admin_password):
+    return LoginUserRequest(username=admin_username, password=admin_password)

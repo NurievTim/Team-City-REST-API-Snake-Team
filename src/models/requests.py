@@ -102,6 +102,7 @@ class CreateUserRequest(BaseModel):
     email: Annotated[Optional[str], GeneratingRule(skip=True)] = None
     name: Annotated[Optional[str], GeneratingRule(skip=True)] = None
 
+
 class LoginUserRequest(BaseModel):
     username: str
     password: str

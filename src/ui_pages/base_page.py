@@ -5,6 +5,7 @@ import requests
 from typing import TypeVar, Type
 from playwright.sync_api import Page
 from src.configs.config import Config
+from src.models.requests import LoginUserRequest
 from src.specs.request_spec import RequestSpecs
 
 T = TypeVar('T', bound="BasePage")
@@ -136,31 +137,11 @@ class BasePage(ABC):
     def get_page(self, page_cls: Type[T]) -> T:
         return page_cls(self.page)
 
-    def auth_as_user(self: T, user_request: CreateUserRequest) -> None:
-        auth_token = RequestSpecs.auth_as_user(user_request.username, user_request.password).get("Authorization")
+    def auth_as_user(self: T, user_request: LoginUserRequest) -> None:
+        tcsessionid = RequestSpecs.auth_as_user(user_request.username, user_request.password).cookies.get("TCSESSIONID")
         self.page.set_viewport_size({"width": 1920, "height": 1080})
         self.page.goto(self.base_url)
-        self.page.evaluate('token => localStorage.setItem("authToken", token)', auth_token)
-
-    def get_auth_cookies(self, username: str, password: str) -> list:
-        session = requests.Session()
-
-        session.post(
-            f"{self.base_url}/app/login.html",
-            data={
-                "username": username,
-                "password": password,
-                "submitLogin": "Login"
-            },
-            allow_redirects=True
-        )
-
-        return [
-            {
-                "name": c.name,
-                "value": c.value,
-                "domain": c.domain or "localhost",
-                "path": c.path or "/",
-            }
-            for c in session.cookies
-        ]
+        self.page.context.add_cookies({
+            "name": "TCSESSIONID",
+            "value": tcsessionid
+        })
