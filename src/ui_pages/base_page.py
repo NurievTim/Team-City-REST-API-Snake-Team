@@ -128,6 +128,7 @@ class BasePage(ABC):
     def click_go_to_log_out(self):
         self.account_menu_button.click()
         self.account_menu_logout.click()
+        return self
 
     def click_go_to_classic_ui(self):
         self.admin_switch_to_classic_ui_button.click()

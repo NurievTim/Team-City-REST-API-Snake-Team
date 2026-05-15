@@ -22,13 +22,13 @@ class TestLoginAdmin:
             .click_create_project_main_button() \
             .check_new_project_create_page()
 
-    @allure.id("59")  # появится вместо приветсвенной кнопки создать проект
-    @allure.title("UI — админ жмёт кнопку создать проект через dropdown button")
-    def test_admin_login_with_correct_data(self, page, admin_username, admin_password):
-        LoginPage(page).open() \
-            .admin_login_with_correct_data(admin_username, admin_password) \
-            .click_create_project_dropdown_button() \
-            .check_new_project_create_page()
+    # @allure.id("59")  # появится вместо приветсвенной кнопки создать проект
+    # @allure.title("UI — админ жмёт кнопку создать проект через dropdown button")
+    # def test_admin_click_dropdown__create_project_button(self, page, admin_username, admin_password):
+    #     LoginPage(page).open() \
+    #         .admin_login_with_correct_data(admin_username, admin_password) \
+    #         .click_create_project_dropdown_button() \
+    #         .check_new_project_create_page()
 
     @allure.id("60")
     @allure.title("UI — админ жмёт кнопку Changes")

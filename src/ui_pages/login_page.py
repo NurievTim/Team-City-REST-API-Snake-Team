@@ -4,7 +4,6 @@ from playwright.sync_api import expect
 from src.enums import UiAlert
 from src.generators.random_data import RandomData
 from src.ui_pages.base_page import BasePage
-from src.ui_pages.project_page import ProjectPanel
 
 class LoginPage(BasePage):
 
@@ -31,7 +30,8 @@ class LoginPage(BasePage):
     def login_to_teamcity_text(self):
         return self.page.locator("#header")
 
-    def admin_login_with_correct_data(self, admin_username: str, admin_password: str) -> 'ProjectPanel':
+    def admin_login_with_correct_data(self, admin_username: str, admin_password: str):
+        from src.ui_pages.project_page import ProjectPanel
         self.page.locator("#username").fill(admin_username)
         self.page.locator("#password").fill(admin_password)
         self.login_button.click()
