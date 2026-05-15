@@ -6,6 +6,7 @@ from src.classes.api_manager import ApiManager
 
 @pytest.mark.users
 @pytest.mark.integration
+@pytest.mark.api
 class TestUsersIntegration:
 
     @allure.id("33")

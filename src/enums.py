@@ -63,3 +63,5 @@ class UiAlert(StrEnum):
     INCORRECT_DATA = 'Incorrect username or password.'
     LOGIN_PAGE_VISIBLE = 'Log in to TeamCity'
     LOGIN_LIMIT_MSG = 'You made 5 failed login attempts in 1m.'
+    NEW_PROJECT_TEXT = "New Project"
+    CHANGES = 'Changes'

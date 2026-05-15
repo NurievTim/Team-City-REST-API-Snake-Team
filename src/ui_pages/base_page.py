@@ -83,24 +83,32 @@ class BasePage(ABC):
 
     def click_switch_to_projects(self):
         self.admin_projects_button.click()
+        return self
 
     def click_switch_to_changes(self):
+        from src.ui_pages.changes_page import ChangesPanel
         self.admin_changes_button.click()
+        return ChangesPanel(self.page)
 
     def click_switch_to_agents(self):
         self.admin_agents_button.click()
+        return self
 
     def click_switch_to_queue(self):
         self.admin_queue_button.click()
+        return self
 
     def click_switch_to_administration(self):
         self.admin_administration_button.click()
+        return self
 
     def click_switch_to_my_investigations(self):
         self.admin_my_investigations_button.click()
+        return self
 
     def click_switch_to_whots_new(self):
         self.admin_whot_new_button.click()
+        return self
 
     def click_switch_to_help(self):
         self.admin_help_button.click()

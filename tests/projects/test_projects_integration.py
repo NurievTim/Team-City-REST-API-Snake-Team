@@ -6,6 +6,7 @@ from src.classes.api_manager import ApiManager
 
 @pytest.mark.projects
 @pytest.mark.integration
+@pytest.mark.api
 class TestProjectIntegration:
     @allure.id("20")  # запрос с жёсткими данными
     @allure.title("POST /projects — создать проект с заданными атрибутами")

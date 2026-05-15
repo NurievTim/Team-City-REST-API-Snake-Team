@@ -7,6 +7,7 @@ from src.enums import BuildState
 
 @pytest.mark.smoke
 @pytest.mark.builds
+@pytest.mark.api
 class TestBuildsSmoke:
     @allure.id("5.1")
     @allure.title("POST /buildTypes — создать build configs, id и name совпадают")

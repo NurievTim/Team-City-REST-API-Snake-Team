@@ -2,13 +2,22 @@ import allure
 from playwright.sync_api import expect
 
 from src.enums import UiAlert
+from src.generators.random_data import RandomData
 from src.ui_pages.base_page import BasePage
-
+from src.ui_pages.project_page import ProjectPanel
 
 class LoginPage(BasePage):
 
     def url(self):
         return "/login.html"
+
+    @property
+    def username_input(self):
+        return self.page.locator("#username")
+
+    @property
+    def password_input(self):
+        return self.page.locator("#password")
 
     @property
     def login_button(self):
@@ -22,16 +31,23 @@ class LoginPage(BasePage):
     def login_to_teamcity_text(self):
         return self.page.locator("#header")
 
-    def admin_login(self, admin_username: str, admin_password: str):
+    def admin_login_with_correct_data(self, admin_username: str, admin_password: str) -> 'ProjectPanel':
         self.page.locator("#username").fill(admin_username)
         self.page.locator("#password").fill(admin_password)
         self.login_button.click()
-        return self
+        return ProjectPanel(self.page)
 
     def admin_login_with_wrong_password(self, admin_username: str):
         self.page.locator("#username").fill(admin_username)
         self.page.locator("#password").fill(admin_username)
         self.login_button.click()
+        return self
+
+    def admin_login_multiple_times(self, times: int):
+        self.username_input.fill(RandomData.get_name())
+        for x in range(times):
+            self.password_input.fill(RandomData.get_password())
+            self.login_button.click()
         return self
 
     def click_login_button(self):
