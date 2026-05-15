@@ -11,6 +11,7 @@ from src.models.responses import QueueBuildResponse
 
 @pytest.mark.integraion
 @pytest.mark.builds
+@pytest.mark.api
 class TestBuildIntegration:
     @allure.id("8")
     @allure.title("Отмена билда в очереди (queued)")

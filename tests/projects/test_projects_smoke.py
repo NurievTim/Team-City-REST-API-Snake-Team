@@ -6,6 +6,7 @@ from src.classes.api_manager import ApiManager
 
 @pytest.mark.smoke
 @pytest.mark.projects
+@pytest.mark.api
 class TestProjectsSmoke:
 
     @allure.id("3")  # запрос без валидного токена возвращает 401

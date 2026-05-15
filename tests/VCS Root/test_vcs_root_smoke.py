@@ -6,6 +6,7 @@ from src.classes.api_manager import ApiManager
 
 @pytest.mark.smoke
 @pytest.mark.vcs_root
+@pytest.mark.api
 class TestVcsRootSmoke:
     @allure.id("26")
     @allure.title("POST /vcs-roots — создание VCS Root")

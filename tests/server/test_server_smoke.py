@@ -7,6 +7,7 @@ from src.classes.api_manager import ApiManager
 
 @pytest.mark.smoke
 @pytest.mark.server
+@pytest.mark.api
 class TestServerSmoke:
 
     @allure.id("1")  # сервер отвечает и возвращает версию

@@ -1,3 +1,7 @@
+import allure
+from playwright.sync_api import expect
+
+from src.enums import UiAlert
 from src.ui_pages.base_page import BasePage
 
 
@@ -25,7 +29,7 @@ class ProjectPanel(BasePage):
     def admin_create_project_main_button(self):
         return self.page.locator('[data-test="ring-tooltip"][data-test-title="Create"] a')
 
-    @property  # Кнопка #3 - только на главной странице проекта, открывает дропдаун лист
+    @property  # Кнопка #3 - акутивно только когда есть проект в сисетеме, открывает дропдаун лист
     def admin_create_project_dropdown_button(self):
         return self.page.locator('[data-hint-container-id="project-create-entity"]')
 
@@ -33,12 +37,24 @@ class ProjectPanel(BasePage):
     def admin_create_project_with_dropdown_button(self):
         return self.page.locator('[data-test="ring-list-item-label"]', has_text="New project")
 
-    def click_create_project_wellcome(self):
+    @property
+    def create_new_project_page(self):
+        return self.page.locator("h1.PageTitle-module__title--gU")
+
+    def check_new_project_create_page(self):
+        with allure.step("Проверить наличее текста 'New Project' "):
+            expect(self.create_new_project_page).to_be_visible()
+            expect(self.create_new_project_page).to_have_text(UiAlert.NEW_PROJECT_TEXT)
+
+    def click_create_project_wellcome_button(self):
         self.admin_create_project_wellcome_button.click()
+        return self
 
-    def click_create_project_main(self):
+    def click_create_project_main_button(self):
         self.admin_create_project_main_button.click()
+        return self
 
-    def click_create_project_main_page(self):
+    def click_create_project_dropdown_button(self):
         self.admin_create_project_dropdown_button.click()
         self.admin_create_project_with_dropdown_button.click()
+        return self
