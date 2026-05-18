@@ -101,3 +101,9 @@ class CreateUserRequest(BaseModel):
     password: Annotated[str, GeneratingRule(regex=r"^[A-Z]{2}[a-z]{3}[0-9]{2}[!@#]{1}$")]
     email: Annotated[Optional[str], GeneratingRule(skip=True)] = None
     name: Annotated[Optional[str], GeneratingRule(skip=True)] = None
+
+
+class LoginUserRequest(BaseModel):
+    username: str
+    password: str
+    submitLogin: str = 'Login'

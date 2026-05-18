@@ -4,6 +4,7 @@ import requests
 
 from src.api.configs.config import Config
 from src.api.models.base_model import BaseModel
+from src.api.models.requests import LoginUserRequest
 from src.api.requests.skeleton.endpoint import Endpoint
 from src.api.requests.skeleton.http_request import HttpRequest
 from src.api.requests.skeleton.interfaces.crud_end_interface import CrudEndpointInterface
@@ -12,10 +13,13 @@ T = TypeVar('T', bound=BaseModel)
 
 
 class CrudRequester(HttpRequest, CrudEndpointInterface):
-
     @property
     def base_url(self) -> str:
-        return f"{Config.get('baseurl')}"
+        return f"{Config.get('server')}{Config.get('api')}"
+
+    @property
+    def base_server_url(self) -> str:
+        return f"{Config.get('server')}"
 
     def post(self, model: Optional[T], endpoint: Endpoint = None, locator: str = None,
              suffix: str = None) -> requests.Response:
@@ -25,7 +29,12 @@ class CrudRequester(HttpRequest, CrudEndpointInterface):
             url = f"{url}/{locator}"
         if suffix:
             url = f"{url}/{suffix}"
-        response = requests.post(url=url, json=model.model_dump() if model is not None else None, headers=self.headers)
+        if isinstance(model, LoginUserRequest):
+            # Отправляем как form-data
+            url = f"{self.base_server_url}/{ep.value.url}"
+            response = requests.post(url=url, data=model.model_dump(), headers=self.headers)
+        else:
+            response = requests.post(url=url, json=model.model_dump() if model is not None else None, headers=self.headers)
         self.response_spec(response)
         return response
 

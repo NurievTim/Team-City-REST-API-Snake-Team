@@ -4,6 +4,8 @@ from abc import ABC, abstractmethod
 from typing import TypeVar, Type
 from playwright.sync_api import Page
 from src.api.configs.config import Config
+from src.api.models.requests import LoginUserRequest
+from src.api.specs.request_spec import RequestSpecs
 
 T = TypeVar('T', bound="BasePage")
 
@@ -142,3 +144,22 @@ class BasePage(ABC):
 
     def get_page(self, page_cls: Type[T]) -> T:
         return page_cls(self.page)
+
+    def auth_as_admin(self: T, user_request: LoginUserRequest) -> None:
+        response = RequestSpecs.auth_as_user(user_request.username, user_request.password)
+        print(f"\n[DEBUG] API Login Status Code: {response.status_code}")
+        print(f"[DEBUG] API Response Headers: {dict(response.headers)}")
+        print(f"[DEBUG] API Cookies Received: {dict(response.cookies)}")
+        tcsessionid = response.cookies.get("TCSESSIONID")
+        if not tcsessionid:
+            raise RuntimeError("Не удалось получить TCSESSIONID")
+        self.page.context.add_cookies([{
+        "name": "TCSESSIONID",
+        "value": tcsessionid,
+        "domain": "localhost",
+        "path": "/"
+    }])
+        self.page.set_viewport_size({"width": 1920, "height": 1080})
+        self.page.goto(self.base_url)
+        self.page.wait_for_selector('[data-test-title="Projects"]', timeout=10000)
+

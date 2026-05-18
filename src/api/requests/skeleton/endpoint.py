@@ -3,9 +3,10 @@ from enum import Enum
 from typing import Optional
 
 from src.api.models.base_model import BaseModel
-from src.api.models.requests import (CreateProjectRequest, CreateBuildTypeRequest, QueueBuildRequest, CopyBuildTypeRequest,
+from src.api.models.requests import (CreateProjectRequest, CreateBuildTypeRequest, QueueBuildRequest,
+                                     CopyBuildTypeRequest,
                                      CreateVcsRootRequest, BuildCancelRequest, RolesUpdateRequest, GroupsUpdateRequest,
-                                     CreateUserRequest)
+                                     CreateUserRequest, LoginUserRequest)
 from src.api.models.responses import (ServerInfoResponse, CurrentUserResponse, ProjectResponse, ProjectsListResponse,
                                       BuildTypeResponse, QueueBuildResponse, AgentsListResponse, VcsRootResponse,
                                       AgentResponse, BuildTypesListResponse, UserResponse, TokenResponse,
@@ -222,4 +223,10 @@ class Endpoint(Enum):
         url='users',
         request_model=None,
         response_model=None,
+    )
+
+    LOGIN_USER = EndpointConfig(
+        url='login.html',
+        request_model=LoginUserRequest,
+        response_model=None
     )
